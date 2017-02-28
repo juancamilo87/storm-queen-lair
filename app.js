@@ -8,9 +8,18 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
+var df = require('console-stamp/node_modules/dateformat');
 
 var app = express();
 var app_api = express();
+
+logger.token('formatted-date', function() {
+  return '[' + df(new Date(), 'dd.mm.yy HH:MM:ss.l') + ']';});
+
+var logger_format = ':formatted-date - :method :url :status :response-time ms - :res[content-length]';
+
+require('log-timestamp')(function () {
+  return '[' +  df(new Date(), 'dd.mm.yy HH:MM:ss.l') + '] - %s' });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -18,7 +27,8 @@ app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+app.use(logger(logger_format));
+app_api.use(logger(logger_format));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app_api.use(bodyParser.urlencoded({ extended: true }));
