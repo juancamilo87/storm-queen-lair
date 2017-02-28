@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel='stylesheet', href='/stylesheets/style.css'/>
+	</head>
+	<body>
+		<% include header.ejs %>
+		<section id="wrapper">
+			<h1><%- message -%></h1>
+			<h2><%- error.status -%></h2>
+			<pre><%- error.stack -%></pre>
+			<% include footer.ejs %>
+	</body>
+</html>

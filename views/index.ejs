@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include import-functions.ejs %>
+    <link rel='stylesheet', href='/stylesheets/style.css'/>
+  </head>
+  <body>
+    <% include header.ejs %>
+    <section id="wrapper">
+      <h1><%- title -%></h1>
+      <p>Welcome to <%- title -%></p>
+      <p>Select your region and input your IGN</p>
+      <input type="radio" name="region" value="na"> NA
+      <input type="radio" name="region" value="eu"> EU<br>
+      <input type="text" id="ign_text"/>
+      <button onclick="myFunction()" id="btn">Click me</button>
+      <div id="response"/>
+    </section>
+
+  </body>
+</html>
