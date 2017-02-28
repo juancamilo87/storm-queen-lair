@@ -1,0 +1,12 @@
+Start nginx:
+
+- sudo service nginx start/restart
+
+Start node:
+
+- Inside the node:
+  - nodemon storm_queen_stats
+
+Start db:
+  - TODO
+
