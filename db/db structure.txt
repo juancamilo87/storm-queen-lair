@@ -1,0 +1,122 @@
+User:
+
+Table: users
+
+id, username, password
+
+Table: user_info
+
+users_id, player_id, visible_guild_id
+
+
+
+Player:
+
+Table: player_info
+
+player_id, ign, region, rank, [generic data]
+
+Table: player_last_matches
+
+player_id, matches_id(csv)
+
+Table: player_stats
+
+player_id, hero, position, game_type, patch, season, [stats]
+
+Table: player_frenemies_heros
+
+player_id, user_hero, frenemy_hero, is_ally, position, game_type, patch, season, [stats]
+
+Table: player_frenemies_players
+
+player_id, frenemy_id, is_ally, position, game_type, patch, season, [stats]
+
+
+
+Match:
+
+Table: matches
+
+match_id, [generic data]
+
+Table: player_result
+
+player_id, match_id, isBlue/left, [stats]
+
+
+
+
+Guild:
+
+Table: guilds
+
+id, guild_name
+
+Table: guild_players
+
+player_id, guild_id
+
+Table: guild_leaderboard
+
+guild_id, hero, position, game_type, patch, season, rank, player_id
+
+Table: guild_stats
+
+guild_id, hero, position, game_type, patch, season, [stats]
+
+
+
+Team:
+
+Table: teams
+
+id, team_name
+
+Table: team_players
+
+player_id, team_id
+
+Table: team_stats
+
+team_id, comp, frenemy_comp, hero, game_type, patch, season, [stats]
+
+
+
+Draft:
+
+Table hero_stats
+
+hero, [stats]
+
+Table draft_stats_frenemies
+
+hero, frenemy_hero, is_ally, [stats]
+
+Table draft_stats_comps
+
+ally_comp_id, enemy_comp_id, [stats]
+
+
+
+Utility:
+
+Table: latest_player_call
+
+player_id, request_timestamp, newest_data_timestamp
+
+Table: latest_ign_call
+
+ign, request_timestamp, newest_data_timestamp
+
+Table: matches_added
+
+id
+
+Table: comps
+
+comp_id, hero
+
+Table: hero_info
+
+hero, hero_name, [generic data]
