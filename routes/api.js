@@ -18,10 +18,6 @@ router.route('/player')
 			    	var ign = req.query.ign;
         var region = req.query.region;
         
-        console.log("Ign: " + ign);
-        console.log("Region: " + region);
-        console.log("Test1: " + mad_glory.test);
-
         function callback(body) {
         			console.log("Received callback");
         			res.json({message: body});
@@ -31,5 +27,30 @@ router.route('/player')
         
       
     });
+
+router.route('/users/register')
+  .post(function(req, res){
+    //TODO: Register a user
+  });
+
+router.route('/users/player_info')
+  .get(function(req, res){
+    //TODO: Return info of the player associated with this user
+  });
+
+router.route('/users/player_stats')
+  .get(function(req, res){
+    //TODO: Return stats of the player associated with this user
+  });
+
+router.route('/player_info')
+  .get(function(req, res){
+    //TODO: Return info of the ign sent
+  });
+
+router.route('/player_stats')
+  .get(function(req, res){
+    //TODO: Return stats of the ign sent
+  });
 
 module.exports = router;
