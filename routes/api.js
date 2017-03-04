@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var mad_glory = require('./external_calls/connect_mad_glory');
 
 router.use(function(req, res, next) {
     // do logging

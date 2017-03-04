@@ -32,3 +32,7 @@ function getPlayer(ign, region, callback_function) {
 		request(options, callback);
 
 }
+
+module.exports = {
+  getPlayer
+  }<
