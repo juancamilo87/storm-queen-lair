@@ -39,6 +39,7 @@ router.route('/player')
 		function callback(error, response, body) {
 		  if (!error && response.statusCode == 200) {
 		    var info = JSON.parse(body);
+		    console.log(info);
 		    res.json({ message: info});
 		  }
 		}

@@ -14,7 +14,7 @@ Player:
 
 Table: player_info
 
-player_id, ign, region, rank, [generic data]
+player_id, ign, region, skill_tier, level, loss_streak, win_streak, total_games, wins, ranked_games
 
 Table: player_last_matches
 
