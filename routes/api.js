@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var mad_glory = require('../external_calls/connect_mad_glory');
-
+var mad_glory = require('../other_functions/connect_mad_glory');
+var db_helper = require('../other_functions/db_helper');
 
 router.use(function(req, res, next) {
     // do logging
@@ -22,10 +22,11 @@ router.route('/player')
         			console.log("Received callback");
         			res.json({message: body});
         }
-        
+        //If info is not old show local info, if not call get player and show new info
+        //Use db_helper.isRefreshNeeded call mad_glory.getPlayer
+        //else call db_helper.getPlayer.
         mad_glory.getPlayer(ign, region, callback);
         
-      
     });
 
 router.route('/users/register')
