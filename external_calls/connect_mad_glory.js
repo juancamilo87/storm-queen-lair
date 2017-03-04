@@ -1,10 +1,7 @@
-var express = require('express');
-
 var api_key = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjMjEzZmZiMC1kY2JmLTAxMzQtYTdiNC0wMjQyYWMxMTAwMDMiLCJpc3MiOiJnYW1lbG9ja2VyIiwib3JnIjoianVhbmNhbWlsbzg3LW91dGxvb2stY29tIiwiYXBwIjoiYzIxMjRiNDAtZGNiZi0wMTM0LWE3YjMtMDI0MmFjMTEwMDAzIiwicHViIjoic2VtYyIsInRpdGxlIjoidmFpbmdsb3J5Iiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.PNxHPaAZsJWd6k_Q0Bkz9BZQyQsHltBKfaAHsQj_MKI";
 var base_url = "https://api.dc01.gamelockerapp.com"; 
 
-
-function getPlayer(ign, region, callback_function) {
+var getPlayer = function(ign, region, callback_function) {
 		console.log("Mad-Ign: " + ign);
 		console.log("Mad-Region: " + region);
 		var request = require('request');    
@@ -32,9 +29,11 @@ function getPlayer(ign, region, callback_function) {
 		}
 
 		request(options, callback);
-
 }
 
-module.exports = function(){
+var test = "1";
+
+module.exports = {
   getPlayer
+
 };

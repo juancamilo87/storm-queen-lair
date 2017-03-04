@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var mad_glory = require('../external_calls/connect_mad_glory');
+
 
 router.use(function(req, res, next) {
     // do logging
@@ -18,7 +20,8 @@ router.route('/player')
         
         console.log("Ign: " + ign);
         console.log("Region: " + region);
-        
+        console.log("Test1: " + mad_glory.test);
+
         function callback(body) {
         			console.log("Received callback");
         			res.json({message: body});
