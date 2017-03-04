@@ -1,0 +1,122 @@
+User:
+
+Table: users
+
+id, username, password
+
+Table: user_info
+
+users_id, player_id, visible_guild_id
+
+
+
+Player:
+
+Table: player_info
+
+player_id, ign, region, skill_tier, level, loss_streak, win_streak, total_games, wins, ranked_games
+
+Table: player_last_matches
+
+player_id, matches_id(csv)
+
+Table: player_stats
+
+player_id, hero, position, side, game_type, patch, season, [wins, total_games, kills_per_game, deaths_per_game, assists_per_game, cs_min_per_game, gold_min_per_game, gold_per_game, kda_per_game, kill_part_per_game, game_length]
+
+Table: player_frenemies_heros
+
+player_id, user_hero, frenemy_hero, is_ally, position, side, game_type, patch, season, [wins, total_games, kills_per_game, deaths_per_game, assists_per_game, cs_min_per_game, gold_min_per_game, gold_per_game, kda_per_game, kill_part_per_game, game_length]
+
+Table: player_frenemies_players
+
+player_id, frenemy_id, is_ally, position, side, game_type, patch, season, [wins, total_games, kills_per_game, deaths_per_game, assists_per_game, cs_min_per_game, gold_min_per_game, gold_per_game, kda_per_game, kill_part_per_game, game_length]
+
+
+
+Match:
+
+Table: matches
+
+match_id, []
+
+Table: player_result
+
+player_id, match_id, isBlue/left, [stats]
+
+
+
+
+Guild:
+
+Table: guilds
+
+id, guild_name
+
+Table: guild_players
+
+player_id, guild_id
+
+Table: guild_leaderboard
+
+guild_id, hero, position, side, game_type, patch, season, rank, player_id, stat
+
+Table: guild_stats
+
+guild_id, hero, position, side, game_type, patch, season, [wins, total_games]
+
+
+
+Team:
+
+Table: teams
+
+id, team_name
+
+Table: team_players
+
+player_id, team_id
+
+Table: team_stats
+
+team_id, comp, frenemy_comp, hero, game_type, patch, season, [wins, total_games, kills_per_game, deaths_per_game, assists_per_game, cs_min_per_game, gold_min_per_game, gold_per_game, kda_per_game, kill_part_per_game, game_length]
+
+
+
+Draft:
+
+Table hero_stats
+
+hero, [wins, total_games, kills, deaths, assists, cs_min, gold_min, gold, kda, kill_part, game_length]
+
+Table draft_stats_frenemies
+
+hero, frenemy_hero, is_ally, [wins, total_games, cs_min, cs_diff]
+
+Table draft_stats_comps
+
+ally_comp_id, enemy_comp_id, [wins, total_games]
+
+
+
+Utility:
+
+Table: latest_player_call
+
+player_id, request_timestamp, newest_data_timestamp
+
+Table: latest_ign_call
+
+ign, request_timestamp, newest_data_timestamp
+
+Table: matches_added
+
+player_id, id
+
+Table: comps
+
+comp_id, concatenatedKeyOptions
+
+Table: hero_info
+
+hero, hero_name, [generic data]
