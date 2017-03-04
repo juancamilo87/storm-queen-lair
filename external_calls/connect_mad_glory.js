@@ -35,6 +35,6 @@ function getPlayer(ign, region, callback_function) {
 
 }
 
-module.exports = {
+module.exports = function(){
   getPlayer
 };
