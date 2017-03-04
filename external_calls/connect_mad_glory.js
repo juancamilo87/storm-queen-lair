@@ -35,4 +35,4 @@ function getPlayer(ign, region, callback_function) {
 
 module.exports = {
   getPlayer
-  }<
+};
