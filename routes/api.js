@@ -23,8 +23,7 @@ router.route('/player')
         			res.json(body);
         }
         
-        mad_glory.getPlayer(ign, region, callback); 
-        });
+        mad_glory.getPlayer(ign, region, callback);
         
       
     });
