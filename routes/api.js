@@ -28,35 +28,4 @@ router.route('/player')
       
     });
 
-router.route('/matches')
-    .get(function(req, res) {
-			    	var ign = req.query.ign;
-        var region = req.query.region;
-        var request = require('request');    
-
-        var options = {
-		  baseUrl: base_url,
-		  uri: '/shards/' + region + '/players',
-		  method: 'GET',
-		  headers: {
-		    'Authorization': api_key,
-		    'X-TITLE-ID': 'semc-vainglory',
-		    'Accept': 'application/vnd.api+json'
-		  },
-		  qs: {
-		  	'filter[playerName]': ign
-		  }
-		};
-		
-		function callback(error, response, body) {
-		  if (!error && response.statusCode == 200) {
-		    var info = JSON.parse(body);
-		    console.log(JSON.stringify(info));
-		    res.json({ message: info});
-		  }
-		}
-
-		request(options, callback);
-    });
-
 module.exports = router;
