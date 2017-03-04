@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var mad_glory = require('./external_calls/connect_mad_glory');
 
 router.use(function(req, res, next) {
     // do logging
@@ -13,17 +13,28 @@ router.get('/', function(req, res){
 });
 
 router.route('/player')
-
-	// get all the bears (accessed at GET http://localhost:8080/api/player)
     .get(function(req, res) {
-    	var ign = req.query.ign;
+			    	var ign = req.query.ign;
         var region = req.query.region;
-        var request = require('request');
+        
+        console.log("Ign: " + ign);
+        console.log("Region: " + region);
+        
+        mad_glory.getPlayer(ign, region, function(body) {
+        			res.json(res.json(body); 
+        });
+        
+      
+    });
 
-        var api_key = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjMjEzZmZiMC1kY2JmLTAxMzQtYTdiNC0wMjQyYWMxMTAwMDMiLCJpc3MiOiJnYW1lbG9ja2VyIiwib3JnIjoianVhbmNhbWlsbzg3LW91dGxvb2stY29tIiwiYXBwIjoiYzIxMjRiNDAtZGNiZi0wMTM0LWE3YjMtMDI0MmFjMTEwMDAzIiwicHViIjoic2VtYyIsInRpdGxlIjoidmFpbmdsb3J5Iiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.PNxHPaAZsJWd6k_Q0Bkz9BZQyQsHltBKfaAHsQj_MKI";
+router.route('/matches')
+    .get(function(req, res) {
+			    	var ign = req.query.ign;
+        var region = req.query.region;
+        var request = require('request');    
 
         var options = {
-		  baseUrl: 'https://api.dc01.gamelockerapp.com',
+		  baseUrl: base_url,
 		  uri: '/shards/' + region + '/players',
 		  method: 'GET',
 		  headers: {
