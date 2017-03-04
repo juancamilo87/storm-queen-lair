@@ -21,7 +21,7 @@ router.route('/player')
         console.log("Region: " + region);
         
         mad_glory.getPlayer(ign, region, function(body) {
-        			res.json(res.json(body); 
+        			res.json(res.json(body)); 
         });
         
       
