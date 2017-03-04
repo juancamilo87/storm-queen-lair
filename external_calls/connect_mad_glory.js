@@ -27,7 +27,7 @@ function getPlayer(ign, region, callback_function) {
 		  if (!error && response.statusCode == 200) {
 		    var info = JSON.parse(body);
 		    console.log(JSON.stringify(info));
-		    callback_function({message: info});
+		    callback_function(info);
 		  }
 		}
 

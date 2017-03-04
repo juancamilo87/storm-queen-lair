@@ -20,7 +20,8 @@ router.route('/player')
         console.log("Region: " + region);
         
         function callback(body) {
-        			res.json(body);
+        			console.log("Received callback");
+        			res.json({message: body});
         }
         
         mad_glory.getPlayer(ign, region, callback);
