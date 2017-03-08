@@ -13,6 +13,31 @@ function opt(options, name, default_value){
   return options && options[name] !== undefined ? options[name] : default_value;
 }
 
+var getPlayerId = function(ign, callback){
+  var query = 'SELECT player_id FROM player_info '
+            + 'WHERE ign like ?';
+  
+  con.query(query, [ign], function(err, rows){
+    if(err) throw err;
+    if(rows.length > 1){
+      callback("", "");
+      return;
+    }
+    callback(rows[0].player_id, rows[0]);
+  }
+}
+
+var lastPlayerUpdate = function(player_id, callback){
+  var query = 'SELECT request_timestamp FROM latest_player_call '
+            + 'WHERE player_id like ?';
+  
+  con.query(query, [player_id], function(err, rows){
+              if(err) throw err;
+              if(rows.length > 1) throw "Error in database definition";
+              callback(rows[0].request_timestamp);
+            }
+}
+
 var updatePlayer = function(player_id, ign, options){
 
   var skill_tier = opt(options, "skill_tier", false);
@@ -25,8 +50,8 @@ var updatePlayer = function(player_id, ign, options){
   var ranked_games = opt(options, "ranked_games", false);
 
   //Verify I have information
-  var query = 'INSERT INTO player_info'
-            + ' SET player_id = ?, ign = ?, '
+  var query = 'INSERT INTO player_info '
+            + 'SET player_id = ?, ign = ?, '
             + 'region = ?, level = ?, '
             + 'loss_streak = ?, win_streak = ?, ' 
             + 'total_games = ?, wins = ?, ranked_games = ? '
@@ -47,15 +72,29 @@ var updatePlayer = function(player_id, ign, options){
                //Dont throw err because server crashes (I think).
                if(err) throw err;
     
-               console.log("Player info updated");
+               console.log("Table player_info updated");
                console.log(rows);
                if(skill_tier) updatePlayerSkillTier(player_id, skill_tier);
              });
+   query = 'INSERT INTO latest_player_call '
+         + 'SET player_id = ?, request_timestamp = ? '
+         + 'ON DUPLICATE KEY UPDATE '
+         + 'request_timestamp = ?';
+   con.query(query,[player_id, timestamp, timestamp],
+             function(err, rows){
+               if(err) throw err;
+               
+               console.log("Table latest_player_call updated");
+               console.log(rows);
+             });
+   
 }
 
 var updatePlayerSkillTier = function(player_id, skill_tier){
   console.log("New skill tier: " + skill_tier);
 }
+
+var updateLastQuery(ign, 
 
 function connect(){
   con.connect(function(err){
@@ -76,5 +115,7 @@ function close(){
 }
 
 module.exports = {
-  updatePlayer
+  updatePlayer,
+  lastPlayerUpdate,
+  getPlayerId
 };

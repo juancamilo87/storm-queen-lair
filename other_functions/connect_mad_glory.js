@@ -4,8 +4,9 @@ var api_key = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjMjEzZmZiM
 var base_url = "https://api.dc01.gamelockerapp.com"; 
 
 var getPlayer = function(ign, region, callback_function) {
-		console.log("Mad-Ign: " + ign);
-		console.log("Mad-Region: " + region);
+		
+		console.log("Calling mad glory");
+		
 		var request = require('request');    
 
    var options = {
