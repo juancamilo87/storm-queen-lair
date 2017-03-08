@@ -80,6 +80,7 @@ var updatePlayer = function(player_id, ign, options){
          + 'SET player_id = ?, request_timestamp = ? '
          + 'ON DUPLICATE KEY UPDATE '
          + 'request_timestamp = ?';
+   var timestamp = (new Date).getTime();
    con.query(query,[player_id, timestamp, timestamp],
              function(err, rows){
                if(err) throw err;
