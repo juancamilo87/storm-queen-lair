@@ -14,7 +14,7 @@ Player:
 
 Table: player_info
 
-player_id, ign, region, skill_tier, level, loss_streak, win_streak, total_games, wins, ranked_games
+player_id, ign, region, patch, skill_tier, level, loss_streak, win_streak, total_games, wins, ranked_games
 
 Table: player_last_matches
 
@@ -38,11 +38,7 @@ Match:
 
 Table: matches
 
-match_id, []
-
-Table: player_result
-
-player_id, match_id, isBlue/left, [stats]
+match_id, match_info(json)
 
 
 
@@ -103,15 +99,15 @@ Utility:
 
 Table: latest_player_call
 
-player_id, request_timestamp, newest_data_timestamp
+player_id, request_timestamp
 
-Table: latest_ign_call
+Table: latest_match_call
 
 ign, request_timestamp, newest_data_timestamp
 
-Table: matches_added
+Table: player_matches_added
 
-player_id, id
+match_id, player_id
 
 Table: comps
 
