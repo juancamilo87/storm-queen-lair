@@ -21,11 +21,9 @@ router.route('/player')
         
         function callback(body) {
         			console.log("Received callback");
+                                console.log(JSON.stringify(body));
         			res.json({message: body});
         }
-        //If info is not old show local info, if not call get player and show new info
-        //Use db_helper.isRefreshNeeded call mad_glory.getPlayer
-        //else call db_helper.getPlayer.
         logic_helper.getPlayer(ign, region, callback);
         
     });

@@ -26,7 +26,6 @@ var getPlayer = function(ign, region, callback_function) {
 		function callback(error, response, body) {
 		  if (!error && response.statusCode == 200) {
 		    var info = JSON.parse(body);
-		    console.log(JSON.stringify(info));
                     var attr = info.data.attributes;
                     var player_options = {
                       region: attr.shardId,
@@ -37,8 +36,12 @@ var getPlayer = function(ign, region, callback_function) {
 		      wins: attr.stats.wins,
   		      ranked_games: attr.stats.played_ranked
                     };
-                    db_helper.updatePlayer(info.data.id, attr.name, player_options); 
-		    callback_function(info);
+
+                    db_helper.updatePlayer(info.data.id, attr.name, player_options);
+                    var rowInserted = player_options;
+                    rowInserted.player_id = info.data.id;
+                    rowInserted.ign = attr.name;
+                    callback_function(rowInserted);
 		  }
 		}
 

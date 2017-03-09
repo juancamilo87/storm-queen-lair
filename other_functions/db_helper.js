@@ -1,4 +1,5 @@
 var mysql = require("mysql");
+var moment = require('moment');
 
 // First you need to create a connection to the db
 var con = mysql.createConnection({
@@ -14,7 +15,7 @@ function opt(options, name, default_value){
 }
 
 var getPlayerId = function(ign, callback){
-  var query = 'SELECT player_id FROM player_info '
+  var query = 'SELECT * FROM player_info '
             + 'WHERE ign like ?';
   
   con.query(query, [ign], function(err, rows){
@@ -24,7 +25,17 @@ var getPlayerId = function(ign, callback){
       return;
     }
     callback(rows[0].player_id, rows[0]);
-  }
+  });
+}
+
+var getPlayer = function(player_id, callback){
+  var query = 'SELECT * FROM player_info '
+            + 'WHERE player_id like ?';
+
+  con.query(query, [player_id], function(err, rows){
+    if(err) throw err;
+    if(rows.length == 1) callback(rows[0]);
+  });
 }
 
 var lastPlayerUpdate = function(player_id, callback){
@@ -34,8 +45,12 @@ var lastPlayerUpdate = function(player_id, callback){
   con.query(query, [player_id], function(err, rows){
               if(err) throw err;
               if(rows.length > 1) throw "Error in database definition";
+              if(rows.length == 0){
+                callback(-1);
+                return;
+              };
               callback(rows[0].request_timestamp);
-            }
+            });
 }
 
 var updatePlayer = function(player_id, ign, options){
@@ -60,7 +75,6 @@ var updatePlayer = function(player_id, ign, options){
             + 'loss_streak = ?, win_streak = ?, '
             + 'total_games = ?, wins = ?, '
             + 'ranked_games = ?';
-  console.log(query);
   con.query(query, 
              [player_id, ign, 
              region, level, loss_streak, 
@@ -73,20 +87,18 @@ var updatePlayer = function(player_id, ign, options){
                if(err) throw err;
     
                console.log("Table player_info updated");
-               console.log(rows);
                if(skill_tier) updatePlayerSkillTier(player_id, skill_tier);
              });
    query = 'INSERT INTO latest_player_call '
-         + 'SET player_id = ?, request_timestamp = ? '
+         + 'SET player_id = ?, request_timestamp = NOW() '
          + 'ON DUPLICATE KEY UPDATE '
-         + 'request_timestamp = ?';
-   var timestamp = (new Date).getTime();
-   con.query(query,[player_id, timestamp, timestamp],
+         + 'request_timestamp = NOW()';
+   var timestamp = moment().utc().format();
+   con.query(query,[player_id],
              function(err, rows){
                if(err) throw err;
                
                console.log("Table latest_player_call updated");
-               console.log(rows);
              });
    
 }
@@ -95,7 +107,6 @@ var updatePlayerSkillTier = function(player_id, skill_tier){
   console.log("New skill tier: " + skill_tier);
 }
 
-var updateLastQuery(ign, 
 
 function connect(){
   con.connect(function(err){
