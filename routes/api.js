@@ -14,9 +14,9 @@ router.get('/', function(req, res){
   res.json({ message: 'hooray! welcome to our api!' });   
 });
 
-router.route('/player')
+router.route('/player_info')
     .get(function(req, res) {
-			    	var ign = req.query.ign;
+        var ign = req.query.ign;
         var region = req.query.region;
         
         function callback(body) {
@@ -43,14 +43,24 @@ router.route('/users/player_stats')
     //TODO: Return stats of the player associated with this user
   });
 
-router.route('/player_info')
+router.route('/player_stats/ign')
   .get(function(req, res){
-    //TODO: Return info of the ign sent
+    var ign = req.query.ign;
+    var region = req.query.region;
+
+    function callback(body) {
+    }
+    logic_helper.getPlayerStats(ign, region, callback);
   });
 
-router.route('/player_stats')
+router.route('/player_stats/player_id')
   .get(function(req, res){
-    //TODO: Return stats of the ign sent
+    var player_id = req.query.player_id;
+    var region = req.query.region;
+
+    function callback(body) {
+    }
+    logic_helper.getPlayerStatsById(player_id, region, callback);
   });
 
 module.exports = router;

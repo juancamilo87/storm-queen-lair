@@ -5,7 +5,7 @@ function myFunction() {
   console.log("The ign is: " + ign);
   console.log("The region is: " + region);
 
-  var url = "http://" + document.location.hostname + ":8080/api/player";
+  var url = "http://" + document.location.hostname + ":8080/api/player_info";
   console.log(url);
 
   $('#response').empty();

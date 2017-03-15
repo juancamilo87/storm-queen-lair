@@ -57,9 +57,22 @@ var getPlayer = function(ign, region, callback_function) {
 		request(options, callback);
 }
 
-var test = "1";
+var getMatches = function(ign, region, timestamp, callback){
+  
+  //TODO: Get matches from mad glory
+  //TODO: Update table latest_match_call
+  //TODO: Update table player_last_matches
+  //TODO: Update table matches
+  //TODO: Update table player_matches_added
+  //TODO: Update stats
+  //TODO: Update table player_stats
+  //TODO: Update table player_frenemies_heros
+  //TODO: Update table player_frenemies_players
+
+
+}
 
 module.exports = {
-  getPlayer
-
+  getPlayer,
+  getMatches
 };

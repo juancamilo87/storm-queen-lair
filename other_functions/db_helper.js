@@ -14,6 +14,27 @@ function opt(options, name, default_value){
   return options && options[name] !== undefined ? options[name] : default_value;
 }
 
+function optWithKey(options, name, default_value) {
+  return options && options[name] !== undefined ? {'name': name, 'value': options[name]} : defaut_value;
+}
+
+function appendFilter(update_query, filter) {
+  var query = update_query.query;
+  var params = update_query.params;
+  
+  if(filter) {
+    var filter_name = filter.name;
+    var filter_value = filter.value;
+    query = query + ' AND ' + filter_name + ' like ?';
+    params[params.length] = filter_value;
+  }
+  return {'query': query, 'params': params};
+  var filter_name = fiter.name;
+  var filter_value = filter.value;
+
+  
+}
+
 var getPlayerId = function(ign, callback){
   var query = 'SELECT * FROM player_info '
             + 'WHERE ign like ?';
@@ -38,6 +59,35 @@ var getPlayer = function(player_id, callback){
   });
 }
 
+var getPlayerStats = function(player_id, filters, callback){
+  
+  var filter_hero = optWithKey(filters, "hero", undefined);
+  var filter_position = optWithKey(filters, "position", undefined);
+  var filter_side = optWithKey(filters, "side", undefined);
+  var filter_game_type = optWithKey(filters, "game_type", undefined);
+  var filter_patch = optWithKey(filters, "patch", undefined);
+  var filter_season = optWithKey(filters, "season", undefined);
+  
+  var query = 'SELECT * FROM player_stats '
+            + 'WHERE player_id like ?';
+  var params_array = [player_id];
+  var update_query = {'query': query, 'params': params_array};
+  update_query = appendFilter(update_query, filter_hero);
+  update_query = appendFilter(update_query, filter_position);
+  update_query = appendFilter(update_query, filter_side);
+  update_query = appendFilter(update_query, fiter_game_type);
+  update_query = appendFilter(update_query, filter_patch);
+  update_query = appendFilter(update_query, filter_season);
+
+  query = update_query.query;
+  params_array = update_query.params;
+  
+  con.query(query, params_array, function(err, rows){
+    if(err) throw err;
+    callback(rows);
+  });
+}
+
 var lastPlayerUpdate = function(player_id, callback){
   var query = 'SELECT request_timestamp FROM latest_player_call '
             + 'WHERE player_id like ?';
@@ -51,6 +101,21 @@ var lastPlayerUpdate = function(player_id, callback){
               };
               callback(rows[0].request_timestamp);
             });
+}
+
+var lastMatchUpdate = function(ign, callback){
+  var query = 'SELECT request_timestamp, newest_data_stamp FROM latest_match_call '
+            + 'WHERE ign like ?';
+
+  con.query(query, [ign], function(err, rows){
+    if(err) throw err;
+    if(rows.length > 1) throw "Error in database definition";
+    if(rows.length == 0){
+      callback(-1);
+      return;
+    }
+    callback(rows[0]);
+  });
 }
 
 var updatePlayer = function(player_id, ign, options){
@@ -129,5 +194,7 @@ function close(){
 module.exports = {
   updatePlayer,
   lastPlayerUpdate,
-  getPlayerId
+  getPlayerId,
+  lastMatchUpdate,
+  getPlayerStats
 };
