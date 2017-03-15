@@ -20,7 +20,7 @@ var getPlayerId = function(ign, callback){
   
   con.query(query, [ign], function(err, rows){
     if(err) throw err;
-    if(rows.length > 1){
+    if(rows.length != 1){
       callback("", "");
       return;
     }

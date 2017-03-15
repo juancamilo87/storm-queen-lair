@@ -26,23 +26,32 @@ var getPlayer = function(ign, region, callback_function) {
 		function callback(error, response, body) {
 		  if (!error && response.statusCode == 200) {
 		    var info = JSON.parse(body);
-                    var attr = info.data.attributes;
-                    var player_options = {
-                      region: attr.shardId,
-                      level: attr.stats.level,
-		      loss_streak: attr.stats.lossStreak,
-                      win_streak: attr.stats.winStreak,
-          	      total_games: attr.stats.played,
-		      wins: attr.stats.wins,
-  		      ranked_games: attr.stats.played_ranked
-                    };
+                    var data_array = info.data;
+                    if (data_array.length == 1 && data_array[0].type == "player") {
+                      var only_info = data_array[0];
+                      var attr = only_info.attributes;
+                      var player_options = {
+                        region: attr.shardId,
+                        level: attr.stats.level,
+  	      	        loss_streak: attr.stats.lossStreak,
+                        win_streak: attr.stats.winStreak,
+            	        total_games: attr.stats.played,
+		        wins: attr.stats.wins,
+  		        ranked_games: attr.stats.played_ranked
+                      };
 
-                    db_helper.updatePlayer(info.data.id, attr.name, player_options);
-                    var rowInserted = player_options;
-                    rowInserted.player_id = info.data.id;
-                    rowInserted.ign = attr.name;
-                    callback_function(rowInserted);
-		  }
+                      db_helper.updatePlayer(only_info.id, attr.name, player_options);
+                      var rowInserted = player_options;
+                      rowInserted.player_id = only_info.id;
+                      rowInserted.ign = attr.name;
+                      callback_function(rowInserted);
+		    } else {
+                      console.log("Player not found");
+                    }
+                  } else {
+                    console.log("Error calling Mad Glory API");
+                    console.log(error);
+                  }
 		}
 
 		request(options, callback);
