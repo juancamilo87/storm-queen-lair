@@ -47,20 +47,36 @@ router.route('/player_stats/ign')
   .get(function(req, res){
     var ign = req.query.ign;
     var region = req.query.region;
-
+    var device_id = req.query.device_id;
+    var filters = req.query.filters;
+    
     function callback(body) {
+      if(device_id) {
+        //TODO: Return 200
+      } else {
+        res.json({message: body});
+      }
     }
-    logic_helper.getPlayerStats(ign, region, callback);
+    var options = {"device_id": device_id};
+    logic_helper.getPlayerStats(ign, region, callback, filters, options);
   });
 
 router.route('/player_stats/player_id')
   .get(function(req, res){
     var player_id = req.query.player_id;
     var region = req.query.region;
+    var device_id = req.query.device_id;
+    var filters = req.query.filters;
 
     function callback(body) {
+      if(device_id) {
+        //TODO: Rréturn 200
+      } else {
+        res.json({message: body});
+      }
     }
-    logic_helper.getPlayerStatsById(player_id, region, callback);
+    var options = {"device_id": device_id};
+    logic_helper.getPlayerStatsById(player_id, region, callback, filters, options);
   });
 
 module.exports = router;

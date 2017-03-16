@@ -1,6 +1,7 @@
 var db_helper = require('./db_helper');
 var mad_glory = require('./connect_mad_glory');
 var moment = require('moment');
+var async = require('async');
 
 var getPlayer = function(ign, region, callback){
 		db_helper.getPlayerId(ign, function(player_id, row){
@@ -34,21 +35,25 @@ var getPlayer = function(ign, region, callback){
 		});
 }
 
-var getPlayerStats = function(ign, region, callback, filters){
+var getPlayerStats = function(ign, region, callback, filters, options){
+  var device_id = opt(options, "device_id", undefined);
   function updateStats(matches, includes) {
     var newestMatchTimestamp = row.newest_data_stamp;
       var newestMatch;
-      for(var match in matches) {
-        if(match.type = "match") {
-          logic_helper.updateStatsForMatch(player_id, match, includes);
-          if(moment.duration(newestMatchTimestamp.diff(match.attributes.createdAt)) < 0) {
-            newestMatchTimestamp = match.attributes.createdAt;
-            newestMatch = match;
+      async.each(matches,function(match, callback) {
+        function local_callback() {
+          callback();
+        }
+        updateStatsForMatch(player_id, match, includes, local_callback);
+      }, function(err) {
+        if(err) {
+          console.log("Error: " + err);
+        } else {
+          if(device_id) {
+            //TODO: Send notification to device
           }
         }
-      }
-      db_helper.updateLatestMatchTimestamp(player_id, newestMatchTimestamp);
-      logic_helper.updateSkillTier(player_id, match, includes);
+      });
   }
 
   function statsCallback(body) {
@@ -78,18 +83,27 @@ var getPlayerStats = function(ign, region, callback, filters){
   getPlayer(ign, region, statsCallback);
 }
 
-var updateStatsForMatch = function(player_id, match, includes_array) {
+var updateStatsForMatch = function(player_id, match, includes_array, sucess) {
   if(db_helper.matchNotAnalized(player_id, match.id)) {
     var match_includes;
-    //TODO: Refactor includes_array into match_includes.
-    function callback() {
-      db_helper.updatePlayerMatches(player_id, match.id);
-      db_helper.updatePlayerLastMatches(player_id, match, match_includes);
-    }
-    db_helper.updatePlayerStats(player_id, match, match_includes, callback);
-    db_helper.updatePlayerFrenemyHeroes(player_id, match, match_includes);
-    db_helper.updatePlayerFrenemyPlayers(player_id, match, match_includes);
-  }  
+    async.parallel([
+      function(callback) {updateSkilltier(player_id, match, includes_array, callback);},
+      function(callback) {db_helper.updateLatestMatchTimestamp(player_id, match_timestamp, callback);},
+      function(callback) {db_helper.updatePlayerStates(player_id, match, match_includes, callback);},
+      function(callback) {db_helper.updatePlayerFrenemyHeroes(player_id, match, match_includes, callback);},
+      function(callback) {db_helper.updatePlayerFrenemyPlayers(player_id, match, match_includes, callback);},
+      function(callback) {db_helper.updatePlayerMatches(player_id, match.id, callback);},
+      function(callback) {db_helper.updatePlayerLastMatches(player_id, match, match_includes, callback);}
+      ], function(err) {
+        if(err) {
+          success(err);
+        } else {
+          success();
+        }
+    });
+  } else {
+    success();
+  } 
 }
 
 var updateSkillTier = function(player_id, match, includes_array) {
