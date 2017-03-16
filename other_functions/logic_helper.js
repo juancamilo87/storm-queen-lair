@@ -108,6 +108,21 @@ var updateStatsForMatch = function(player_id, match, includes_array, sucess) {
 
 var updateSkillTier = function(player_id, match, includes_array) {
   
+  var rosters = getFullRosters(match, includes_array);
+  
+  var skillTier;
+
+  for(var roster in rosters) {
+    for(var participant in roster.roster) {
+      if(participant.player.id == player_id) {
+      skillTier = participant.attributes.stats.skillTier;
+      }
+    }
+  }
+  if(skillTier) db_helper.updateSkillTier(player_id, skillTier);
+}
+
+function getFullRosters(match, includes) {
   //TODO: make generic function
   var rosters = match.relationships.rosters.data;
   //Get rosters
@@ -151,17 +166,8 @@ var updateSkillTier = function(player_id, match, includes_array) {
       }
     }
   }
-  
-  var skillTier;
 
-  for(var roster in rosters) {
-    for(var participant in roster.roster) {
-      if(participant.player.id == player_id) {
-      skillTier = participant.attributes.stats.skillTier;
-      }
-    }
-  }
-  if(skillTier) db_helper.updateSkillTier(player_id, skillTier);
+  return rosters;
 }
 
 module.exports = {
