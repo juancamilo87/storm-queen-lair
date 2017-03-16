@@ -40,26 +40,21 @@ var getPlayerStats = function(ign, region, callback, filters){
     console.log("Got player_id: " + player_id);
     if(player_id) {
       console.log("Player id found");
-      db_helper.lastMatchUpdate(ign, function(row){
+      db_helper.lastMatchUpdate(player_id, function(row){
         var timestamp = row.request_timestamp;
         var duration = moment.duration(moment().utc().diff(timestamp));
         var hours = duration.seconds();
-        console.log(hours + " saconds");
+        console.log(hours + " seconds");
         if(hours > 20) {
-          console.log("Match data too old, getting newer matches");
-          mad_glory.getMatches(ign, region, row.newest_data_stamp, function(){
-            db_helper.getPlayerStats(player_id, filters, function(stats) {
-              stats.last_update = moment().utc().format();
-              callback(stats);
-            });
-          });
+          console.log("Match data too old, getting newer matches but returning old data.");
+          mad_glory.getMatches(player_id, region, row.newest_data_stamp);
         } else {
-          console.log("Match data new, returning local stats");
-          db_helper.getPlayerStats(player_id, filters, function(stats) {
+          console.log("Match data new, no need to update.");
+        }
+        db_helper.getPlayerStats(player_id, filters, function(stats) {
             stats.last_update = timestamp;
             callback(stats);
           });
-        }
 
       });
     }
@@ -67,7 +62,29 @@ var getPlayerStats = function(ign, region, callback, filters){
   getPlayer(ign, region, statsCallback);
 }
 
+var updateStatsForMatch = function(player_id, match, includes_array) {
+  if(db_helper.matchNotAnalized(player_id, match.id)) {
+    var match_includes;
+    //TODO: Refactor includes_array into match_includes.
+    function callback() {
+      db_helper.updatePlayerMatches(player_id, match.id);
+      db_helper.updatePlayerLastMatches(player_id, match, match_includes);
+    }
+    db_helper.updatePlayerStats(player_id, match, match_includes, callback);
+    db_helper.updatePlayerFrenemyHeroes(player_id, match, match_includes);
+    db_helper.updatePlayerFrenemyPlayers(player_id, match, match_includes);
+  }  
+}
+
+var updateSkillTier = function(player_id, match, includes_array) {
+  //TODO: get skilltier
+  var skillTier;
+  db_helper.updateSkillTier(player_id, skillTier);
+}
+
 module.exports = {
   getPlayer,
-  getPlayerStats
+  getPlayerStats,
+  updateStatsForMatch,
+  updateSkillTier
 };

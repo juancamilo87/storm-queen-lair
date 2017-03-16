@@ -10,6 +10,25 @@ var con = mysql.createConnection({
 });
 
 connect();
+
+function connect(){
+  con.connect(function(err){
+    if(err){
+      console.log('Error connecting to Db');
+      return;
+    }
+    console.log('Connection established');
+  });
+}
+
+function close(){
+  con.end(function(err) {
+    // The connection is terminated gracefully
+    // Ensures all previously enqueued queries are still
+    // before sending a COM_QUIT packet to the MySQL server.
+  });
+}
+
 function opt(options, name, default_value){
   return options && options[name] !== undefined ? options[name] : default_value;
 }
@@ -103,9 +122,9 @@ var lastPlayerUpdate = function(player_id, callback){
             });
 }
 
-var lastMatchUpdate = function(ign, callback){
+var lastMatchUpdate = function(player_id, callback){
   var query = 'SELECT request_timestamp, newest_data_stamp FROM latest_match_call '
-            + 'WHERE ign like ?';
+            + 'WHERE player_id like ?';
 
   con.query(query, [ign], function(err, rows){
     if(err) throw err;
@@ -169,26 +188,45 @@ var updatePlayer = function(player_id, ign, options){
 }
 
 var updatePlayerSkillTier = function(player_id, skill_tier){
+  //TODO: update player skill tier
   console.log("New skill tier: " + skill_tier);
 }
 
-
-function connect(){
-  con.connect(function(err){
-    if(err){
-      console.log('Error connecting to Db');
-      return;
-    }
-    console.log('Connection established');
-  });
+var updateLatestMatchCall = function(player_id) {
+  //TODO update LatestMatchCall with current time
+  var timestamp = moment().utc().format();
 }
 
-function close(){
-  con.end(function(err) {
-    // The connection is terminated gracefully
-    // Ensures all previously enqueued queries are still
-    // before sending a COM_QUIT packet to the MySQL server.
-  });
+var updateLatestMatchTimestamp = function(player_id, timestamp) {
+  //TODO update LatestMatchCall latest match
+}
+
+var matchNotAnalized = function(player_id, match_id) {
+  var matchAnalized = false;
+  //TODO return false or true depending if the pair exists.
+
+  return matchAnalized;
+}
+
+var updatePlayerMatches = function(player_id, match_id) {
+  //TODO: update player matches
+}
+
+var updatePlayerLastMatches = function(player_id, match, match_includes) {
+  //TODO update player last matches
+  //If it is part of the last matches then store the match in table of local matches.
+}
+
+var updatePlayerStats = function(player_id, match, match_includes) {
+  //TODO update player stats
+}
+
+var updatePlayerFrenemyHeroes = function(player_id, match, match_includes) {
+  //TODO update player frenemies heroes stats
+}
+
+var updatePlayerFrenemyPlayers = function(player_id, match, match_includes) {
+  //TODO update player frenemies players
 }
 
 module.exports = {
@@ -196,5 +234,13 @@ module.exports = {
   lastPlayerUpdate,
   getPlayerId,
   lastMatchUpdate,
-  getPlayerStats
+  getPlayerStats,
+  updateLatestMatchCall,
+  updateLatestMatchTimestamp,
+  matchNotAnalized,
+  updatePlayerMatches,
+  updatePlayerLastMatches,
+  updatePlayerStats,
+  updatePlayerFrenemyHeroes,
+  updatePlayerFrenemyPlayers
 };
