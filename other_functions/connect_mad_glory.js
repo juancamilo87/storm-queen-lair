@@ -1,6 +1,4 @@
 var db_helper = require('./db_helper');
-var logic_helper = require('./logic_helper');
-var moment = require('moment');
 
 var api_key = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjMjEzZmZiMC1kY2JmLTAxMzQtYTdiNC0wMjQyYWMxMTAwMDMiLCJpc3MiOiJnYW1lbG9ja2VyIiwib3JnIjoianVhbmNhbWlsbzg3LW91dGxvb2stY29tIiwiYXBwIjoiYzIxMjRiNDAtZGNiZi0wMTM0LWE3YjMtMDI0MmFjMTEwMDAzIiwicHViIjoic2VtYyIsInRpdGxlIjoidmFpbmdsb3J5Iiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.PNxHPaAZsJWd6k_Q0Bkz9BZQyQsHltBKfaAHsQj_MKI";
 var base_url = "https://api.dc01.gamelockerapp.com"; 
@@ -59,7 +57,7 @@ var getPlayer = function(ign, region, callback_function) {
   request(options, callback);
 }
 
-var getMatches = function(player_id, region, timestamp){
+var getMatches = function(player_id, region, timestamp, logic_callback){
   console.log("Calling mad glory");
   console.log("Timestamp: " + timestamp + " Iso format: " + new Date(timestamp).toIsoString());
   var request = require('request');    
@@ -86,19 +84,7 @@ var getMatches = function(player_id, region, timestamp){
       var data_array = info.data;
       var includes_array = info.includes;
       db_helper.updateLatestMatchCall(player_id);
-      var newestMatchTimestamp = timestamp;
-      var newestMatch;
-      for(var match in data_array) {
-        if(match.type = "match") {
-          logic_helper.updateStatsForMatch(player_id, match, includes_array);
-          if(moment.duration(newestMatchTimestamp.diff(match.attributes.createdAt)) < 0) {
-            newestMatchTimestamp = match.attributes.createdAt;
-            newestMatch = match;
-          }
-        }
-      }
-      db_helper.updateLatestMatchTimestamp(player_id, newestMatchTimestamp);
-      logic_helper.updateSkillTier(player_id, match, includes_array);
+      logic_callback(data_array, includes_array);
     } else {
       console.log("Error calling Mad Glory API");
       console.log(error);

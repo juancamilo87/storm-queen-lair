@@ -35,6 +35,22 @@ var getPlayer = function(ign, region, callback){
 }
 
 var getPlayerStats = function(ign, region, callback, filters){
+  function updateStats(matches, includes) {
+    var newestMatchTimestamp = row.newest_data_stamp;
+      var newestMatch;
+      for(var match in matches) {
+        if(match.type = "match") {
+          logic_helper.updateStatsForMatch(player_id, match, includes);
+          if(moment.duration(newestMatchTimestamp.diff(match.attributes.createdAt)) < 0) {
+            newestMatchTimestamp = match.attributes.createdAt;
+            newestMatch = match;
+          }
+        }
+      }
+      db_helper.updateLatestMatchTimestamp(player_id, newestMatchTimestamp);
+      logic_helper.updateSkillTier(player_id, match, includes);
+  }
+
   function statsCallback(body) {
     var player_id = body.player_id;
     console.log("Got player_id: " + player_id);
@@ -47,7 +63,7 @@ var getPlayerStats = function(ign, region, callback, filters){
         console.log(hours + " seconds");
         if(hours > 20) {
           console.log("Match data too old, getting newer matches but returning old data.");
-          mad_glory.getMatches(player_id, region, row.newest_data_stamp);
+          mad_glory.getMatches(player_id, region, row.newest_data_stamp, updateStats);
         } else {
           console.log("Match data new, no need to update.");
         }
