@@ -93,9 +93,61 @@ var updateStatsForMatch = function(player_id, match, includes_array) {
 }
 
 var updateSkillTier = function(player_id, match, includes_array) {
-  //TODO: get skilltier
+  
+  //TODO: make generic function
+  var rosters = match.relationships.rosters.data;
+  //Get rosters
+  var all_rosters = [];
+  var all_participants = [];
+  var all_players = [];
+  for(var item in includes_array) {
+    if(item.type == "roster") {
+      all_rosters.append(item);
+      if(item.id == rosters[0].id) {
+        rosters[0].roster = item;
+      } else if(item.id == rosters[1].id) {
+        rosters[1].roster = item;
+      }
+    } else if(item.type == "participant") {
+      all_participants.append(item);
+    } else if(item.type == "player") {
+      all_players.append(item);
+    }
+  }
+  //Get participants
+  for(var roster in rosters) {
+    for(var participant in roster.roster) {
+      for(var item in all_participants) {
+        if(item.id == participant.id) {
+          participant.data = item;
+          break;
+        }
+      }
+    }
+  }
+
+  //Get players
+  for(var roster in rosters) {
+    for(var participant in roster.roster) {
+      for(var player in all_players) {
+        if(participant.data.relationships.player.data.id == player.id) {
+          participant.player = player;
+          break;
+        }
+      }
+    }
+  }
+  
   var skillTier;
-  db_helper.updateSkillTier(player_id, skillTier);
+
+  for(var roster in rosters) {
+    for(var participant in roster.roster) {
+      if(participant.player.id == player_id) {
+      skillTier = participant.attributes.stats.skillTier;
+      }
+    }
+  }
+  if(skillTier) db_helper.updateSkillTier(player_id, skillTier);
 }
 
 module.exports = {
