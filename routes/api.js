@@ -28,21 +28,6 @@ router.route('/player_info')
         
     });
 
-router.route('/users/register')
-  .post(function(req, res){
-    //TODO: Register a user
-  });
-
-router.route('/users/player_info')
-  .get(function(req, res){
-    //TODO: Return info of the player associated with this user
-  });
-
-router.route('/users/player_stats')
-  .get(function(req, res){
-    //TODO: Return stats of the player associated with this user
-  });
-
 router.route('/player_stats/ign')
   .get(function(req, res){
     var ign = req.query.ign;
@@ -59,24 +44,6 @@ router.route('/player_stats/ign')
     }
     var options = {"device_id": device_id};
     logic_helper.getPlayerStats(ign, region, callback, filters, options);
-  });
-
-router.route('/player_stats/player_id')
-  .get(function(req, res){
-    var player_id = req.query.player_id;
-    var region = req.query.region;
-    var device_id = req.query.device_id;
-    var filters = req.query.filters;
-
-    function callback(body) {
-      if(device_id) {
-        //TODO: Rréturn 200
-      } else {
-        res.json({message: body});
-      }
-    }
-    var options = {"device_id": device_id};
-    logic_helper.getPlayerStatsById(player_id, region, callback, filters, options);
   });
 
 module.exports = router;

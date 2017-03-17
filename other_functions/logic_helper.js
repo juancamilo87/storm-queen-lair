@@ -38,22 +38,21 @@ var getPlayer = function(ign, region, callback){
 var getPlayerStats = function(ign, region, callback, filters, options){
   var device_id = opt(options, "device_id", undefined);
   function updateStats(matches, includes) {
-    var newestMatchTimestamp = row.newest_data_stamp;
-      var newestMatch;
-      async.each(matches,function(match, callback) {
-        function local_callback() {
-          callback();
+    async.each(matches,function(match, callback) {
+      function local_callback() {
+        callback();
+      }
+      updateStatsForMatch(player_id, match, includes, local_callback);
+    }, function(err) {
+      if(err) {
+        console.log("Error: " + err);
+      } else {
+        if(device_id) {
+          //TODO: Send notification to device
+          console.log("Stats updated. A notification has to be sent here.")
         }
-        updateStatsForMatch(player_id, match, includes, local_callback);
-      }, function(err) {
-        if(err) {
-          console.log("Error: " + err);
-        } else {
-          if(device_id) {
-            //TODO: Send notification to device
-          }
-        }
-      });
+      }
+    });
   }
 
   function statsCallback(body) {
@@ -83,17 +82,15 @@ var getPlayerStats = function(ign, region, callback, filters, options){
   getPlayer(ign, region, statsCallback);
 }
 
-var updateStatsForMatch = function(player_id, match, includes_array, sucess) {
+var updateStatsForMatch = function(player_id, match, includes_array, success) {
   if(db_helper.matchNotAnalized(player_id, match.id)) {
-    var match_includes;
+    var rosters = getFullRosters(match, includes_array);
     async.parallel([
-      function(callback) {updateSkilltier(player_id, match, includes_array, callback);},
-      function(callback) {db_helper.updateLatestMatchTimestamp(player_id, match_timestamp, callback);},
-      function(callback) {db_helper.updatePlayerStates(player_id, match, match_includes, callback);},
-      function(callback) {db_helper.updatePlayerFrenemyHeroes(player_id, match, match_includes, callback);},
-      function(callback) {db_helper.updatePlayerFrenemyPlayers(player_id, match, match_includes, callback);},
-      function(callback) {db_helper.updatePlayerMatches(player_id, match.id, callback);},
-      function(callback) {db_helper.updatePlayerLastMatches(player_id, match, match_includes, callback);}
+        function(callback) {updateSkilltier(player_id, match, rosters, callback);},
+        function(callback) {db_helper.updateStats(player_id, match, rosters, callback);},
+        function(callback) {db_helper.updatePlayerLastMatches(player_id, match, rosters, callback);},
+        function(callback) {db_helper.updateLatestMatchTimestamp(player_id, match_timestamp, callback);},
+        function(callback) {db_helper.updatePlayerMatches(player_id, match.id, callback);}
       ], function(err) {
         if(err) {
           success(err);
@@ -106,20 +103,28 @@ var updateStatsForMatch = function(player_id, match, includes_array, sucess) {
   } 
 }
 
-var updateSkillTier = function(player_id, match, includes_array) {
-  
-  var rosters = getFullRosters(match, includes_array);
-  
-  var skillTier;
+var updateSkillTier = function(player_id, match, rosters, success) {
+  //Check if match is newer
+  var match_timestamp = match.attributes.createdAt;
+  function callback(row) {
+    if(moment.duration(match_timestamp.diff(row.newest_data_stamp)) > 0) {
+      var skillTier;
 
-  for(var roster in rosters) {
-    for(var participant in roster.roster) {
-      if(participant.player.id == player_id) {
-      skillTier = participant.attributes.stats.skillTier;
+      for(var roster in rosters) {
+        for(var participant in roster.participants) {
+          if(participant.player.id == player_id) {
+          skillTier = participant.info.stats.skillTier;
+          }
+        }
       }
+      if(skillTier) {
+        db_helper.updateSkillTier(player_id, skillTier, success);
+        return;
+      } 
     }
+    success();
   }
-  if(skillTier) db_helper.updateSkillTier(player_id, skillTier);
+  lastMatchUpdate(player_id, callback);
 }
 
 function getFullRosters(match, includes) {
@@ -133,9 +138,11 @@ function getFullRosters(match, includes) {
     if(item.type == "roster") {
       all_rosters.append(item);
       if(item.id == rosters[0].id) {
-        rosters[0].roster = item;
+        rosters[0].participants = item.relationships.participants.data;
+        rosters[0].info = item.attributes.stats;
       } else if(item.id == rosters[1].id) {
-        rosters[1].roster = item;
+        rosters[1].participants = item.relationships.participants.data;
+        rosters[1].info = item.attributes.stats;
       }
     } else if(item.type == "participant") {
       all_participants.append(item);
@@ -145,22 +152,47 @@ function getFullRosters(match, includes) {
   }
   //Get participants
   for(var roster in rosters) {
-    for(var participant in roster.roster) {
+    var carryIndex;
+    var captainIndex;
+    var maxLaneCs = -1;
+    var minCs = 1000;
+    var index = 0;
+    for(var participant in roster.participants) {
       for(var item in all_participants) {
         if(item.id == participant.id) {
-          participant.data = item;
+          participant.info = item.attributes;
+          participant.player = item.relationships.player.data;
+          if(participant.info.stats.nonJungleMinionKills > maxLaneCs) {
+            maxLaneCs = participant.info.stats.nonJungleMinionKills;
+            carryIndex = index;
+          }
+          if(participant.info.stats.farm < minCs) {
+            minCs = participant.info.stats.farm;
+            captainIndex = index;
+          }
           break;
         }
       }
+      index = index + 1;
+    }
+    for(var i = 0; i < 3; i++) {
+      if(i == carryIndex) {
+        roster.participants[i].info.position = "carry";  
+      } else if(i == captainIndex) {
+        roster.participants[i].info.position = "captain"; 
+      } else {
+        roster.participants[i].info.position = "jungler"; 
+      }
+      
     }
   }
 
   //Get players
   for(var roster in rosters) {
-    for(var participant in roster.roster) {
+    for(var participant in roster.participants) {
       for(var player in all_players) {
-        if(participant.data.relationships.player.data.id == player.id) {
-          participant.player = player;
+        if(participant.player.id == player.id) {
+          participant.player.info = player.attributes;
           break;
         }
       }
