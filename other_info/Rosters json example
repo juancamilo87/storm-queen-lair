@@ -1,0 +1,550 @@
+{
+  "rosters": [
+    {
+      "type": "roster",
+      "id": "16173b7a-fa0c-11e6-9d53-0242ac110007",
+      "info": {
+        "acesEarned": 0,
+        "gold": 38956,
+        "heroKills": 18,
+        "krakenCaptures": 0,
+        "side": "right/red",
+        "turretKills": 1,
+        "turretsRemaining": 1
+      },
+      "participants": [
+        {
+          "type": "participant",
+          "id": "16173b95-fa0c-11e6-9d53-0242ac110007",
+          "info": {
+            "actor": "*Skye*",
+            "stats": {
+              "assists": 6,
+              "crystalMineCaptures": 0,
+              "deaths": 6,
+              "farm": 85.125,
+              "firstAfkTime": -1,
+              "goldMineCaptures": 1,
+              "itemGrants": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1003_Item_CrystalBit*": 4,
+                "*1009_Item_EclipsePrism*": 1,
+                "*1015_Item_Oakheart*": 1,
+                "*1017_Item_LightArmor*": 1,
+                "*1022_Item_CoatOfPlates*": 1,
+                "*1025_Item_EnergyBattery*": 1,
+                "*1027_Item_VoidBattery*": 1,
+                "*1030_Item_SprintBoots*": 1,
+                "*1032_Item_TravelBoots*": 1,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1044_Item_Frostburn*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1055_Item_BrokenMyth*": 1,
+                "*1061_Item_LightShield*": 1,
+                "*1062_Item_KineticShield*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1070_Item_PiercingShard*": 1,
+                "*1072_Item_HeavyPrism*": 3,
+                "*1087_Item_HalcyonChargers*": 1
+              },
+              "itemSells": {},
+              "itemUses": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1030_Item_SprintBoots*": 2,
+                "*1032_Item_TravelBoots*": 2,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1087_Item_HalcyonChargers*": 2
+              },
+              "items": [
+                "Frostburn",
+                "Broken Myth",
+                "Halcyon Chargers",
+                "Crystal Matrix",
+                "Armor2",
+                "Heavy Prism"
+              ],
+              "jungleKills": 54,
+              "karmaLevel": 1,
+              "kills": 10,
+              "krakenCaptures": 1,
+              "level": 30,
+              "minionKills": 75,
+              "nonJungleMinionKills": 21,
+              "skillTier": 25,
+              "skinKey": "Skye_Skin_Eagle_T1",
+              "turretCaptures": 2,
+              "wentAfk": false,
+              "winner": true
+            }
+          },
+          "player": {
+            "type": "player",
+            "id": "037c4e60-9c09-11e4-887e-06eb725f8a76",
+            "info": {
+              "name": "momipole",
+              "shardId": "",
+              "stats": {
+                "level": 30,
+                "lifetimeGold": 13417.375,
+                "lossStreak": 0,
+                "played": 2708,
+                "played_ranked": 1871,
+                "winStreak": 2,
+                "wins": 1402,
+                "xp": 175450
+              },
+              "titleId": ""
+            }
+          }
+        },
+        {
+          "type": "participant",
+          "id": "16173b95-fa0c-11e6-9d53-0242ac110007",
+          "info": {
+            "actor": "*Skye*",
+            "stats": {
+              "assists": 6,
+              "crystalMineCaptures": 0,
+              "deaths": 6,
+              "farm": 85.125,
+              "firstAfkTime": -1,
+              "goldMineCaptures": 1,
+              "itemGrants": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1003_Item_CrystalBit*": 4,
+                "*1009_Item_EclipsePrism*": 1,
+                "*1015_Item_Oakheart*": 1,
+                "*1017_Item_LightArmor*": 1,
+                "*1022_Item_CoatOfPlates*": 1,
+                "*1025_Item_EnergyBattery*": 1,
+                "*1027_Item_VoidBattery*": 1,
+                "*1030_Item_SprintBoots*": 1,
+                "*1032_Item_TravelBoots*": 1,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1044_Item_Frostburn*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1055_Item_BrokenMyth*": 1,
+                "*1061_Item_LightShield*": 1,
+                "*1062_Item_KineticShield*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1070_Item_PiercingShard*": 1,
+                "*1072_Item_HeavyPrism*": 3,
+                "*1087_Item_HalcyonChargers*": 1
+              },
+              "itemSells": {},
+              "itemUses": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1030_Item_SprintBoots*": 2,
+                "*1032_Item_TravelBoots*": 2,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1087_Item_HalcyonChargers*": 2
+              },
+              "items": [
+                "Frostburn",
+                "Broken Myth",
+                "Halcyon Chargers",
+                "Crystal Matrix",
+                "Armor2",
+                "Heavy Prism"
+              ],
+              "jungleKills": 54,
+              "karmaLevel": 1,
+              "kills": 10,
+              "krakenCaptures": 1,
+              "level": 30,
+              "minionKills": 75,
+              "nonJungleMinionKills": 21,
+              "skillTier": 25,
+              "skinKey": "Skye_Skin_Eagle_T1",
+              "turretCaptures": 2,
+              "wentAfk": false,
+              "winner": true
+            }
+          },
+          "player": {
+            "type": "player",
+            "id": "037c4e60-9c09-11e4-887e-06eb725f8a76",
+            "info": {
+              "name": "momipole",
+              "shardId": "",
+              "stats": {
+                "level": 30,
+                "lifetimeGold": 13417.375,
+                "lossStreak": 0,
+                "played": 2708,
+                "played_ranked": 1871,
+                "winStreak": 2,
+                "wins": 1402,
+                "xp": 175450
+              },
+              "titleId": ""
+            }
+          }
+        },
+        {
+          "type": "participant",
+          "id": "16173b95-fa0c-11e6-9d53-0242ac110007",
+          "info": {
+            "actor": "*Skye*",
+            "stats": {
+              "assists": 6,
+              "crystalMineCaptures": 0,
+              "deaths": 6,
+              "farm": 85.125,
+              "firstAfkTime": -1,
+              "goldMineCaptures": 1,
+              "itemGrants": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1003_Item_CrystalBit*": 4,
+                "*1009_Item_EclipsePrism*": 1,
+                "*1015_Item_Oakheart*": 1,
+                "*1017_Item_LightArmor*": 1,
+                "*1022_Item_CoatOfPlates*": 1,
+                "*1025_Item_EnergyBattery*": 1,
+                "*1027_Item_VoidBattery*": 1,
+                "*1030_Item_SprintBoots*": 1,
+                "*1032_Item_TravelBoots*": 1,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1044_Item_Frostburn*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1055_Item_BrokenMyth*": 1,
+                "*1061_Item_LightShield*": 1,
+                "*1062_Item_KineticShield*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1070_Item_PiercingShard*": 1,
+                "*1072_Item_HeavyPrism*": 3,
+                "*1087_Item_HalcyonChargers*": 1
+              },
+              "itemSells": {},
+              "itemUses": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1030_Item_SprintBoots*": 2,
+                "*1032_Item_TravelBoots*": 2,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1087_Item_HalcyonChargers*": 2
+              },
+              "items": [
+                "Frostburn",
+                "Broken Myth",
+                "Halcyon Chargers",
+                "Crystal Matrix",
+                "Armor2",
+                "Heavy Prism"
+              ],
+              "jungleKills": 54,
+              "karmaLevel": 1,
+              "kills": 10,
+              "krakenCaptures": 1,
+              "level": 30,
+              "minionKills": 75,
+              "nonJungleMinionKills": 21,
+              "skillTier": 25,
+              "skinKey": "Skye_Skin_Eagle_T1",
+              "turretCaptures": 2,
+              "wentAfk": false,
+              "winner": true
+            }
+          },
+          "player": {
+            "type": "player",
+            "id": "037c4e60-9c09-11e4-887e-06eb725f8a76",
+            "info": {
+              "name": "momipole",
+              "shardId": "",
+              "stats": {
+                "level": 30,
+                "lifetimeGold": 13417.375,
+                "lossStreak": 0,
+                "played": 2708,
+                "played_ranked": 1871,
+                "winStreak": 2,
+                "wins": 1402,
+                "xp": 175450
+              },
+              "titleId": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "roster",
+      "id": "16173b91-fa0c-11e6-9d53-0242ac110007",
+      "info": {
+        "acesEarned": 0,
+        "gold": 38956,
+        "heroKills": 18,
+        "krakenCaptures": 0,
+        "side": "right/red",
+        "turretKills": 1,
+        "turretsRemaining": 1
+      },
+      "participants": [
+        {
+          "type": "participant",
+          "id": "16173b95-fa0c-11e6-9d53-0242ac110007",
+          "info": {
+            "actor": "*Skye*",
+            "stats": {
+              "assists": 6,
+              "crystalMineCaptures": 0,
+              "deaths": 6,
+              "farm": 85.125,
+              "firstAfkTime": -1,
+              "goldMineCaptures": 1,
+              "itemGrants": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1003_Item_CrystalBit*": 4,
+                "*1009_Item_EclipsePrism*": 1,
+                "*1015_Item_Oakheart*": 1,
+                "*1017_Item_LightArmor*": 1,
+                "*1022_Item_CoatOfPlates*": 1,
+                "*1025_Item_EnergyBattery*": 1,
+                "*1027_Item_VoidBattery*": 1,
+                "*1030_Item_SprintBoots*": 1,
+                "*1032_Item_TravelBoots*": 1,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1044_Item_Frostburn*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1055_Item_BrokenMyth*": 1,
+                "*1061_Item_LightShield*": 1,
+                "*1062_Item_KineticShield*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1070_Item_PiercingShard*": 1,
+                "*1072_Item_HeavyPrism*": 3,
+                "*1087_Item_HalcyonChargers*": 1
+              },
+              "itemSells": {},
+              "itemUses": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1030_Item_SprintBoots*": 2,
+                "*1032_Item_TravelBoots*": 2,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1087_Item_HalcyonChargers*": 2
+              },
+              "items": [
+                "Frostburn",
+                "Broken Myth",
+                "Halcyon Chargers",
+                "Crystal Matrix",
+                "Armor2",
+                "Heavy Prism"
+              ],
+              "jungleKills": 54,
+              "karmaLevel": 1,
+              "kills": 10,
+              "krakenCaptures": 1,
+              "level": 30,
+              "minionKills": 75,
+              "nonJungleMinionKills": 21,
+              "skillTier": 25,
+              "skinKey": "Skye_Skin_Eagle_T1",
+              "turretCaptures": 2,
+              "wentAfk": false,
+              "winner": true
+            }
+          },
+          "player": {
+            "type": "player",
+            "id": "037c4e60-9c09-11e4-887e-06eb725f8a76",
+            "info": {
+              "name": "momipole",
+              "shardId": "",
+              "stats": {
+                "level": 30,
+                "lifetimeGold": 13417.375,
+                "lossStreak": 0,
+                "played": 2708,
+                "played_ranked": 1871,
+                "winStreak": 2,
+                "wins": 1402,
+                "xp": 175450
+              },
+              "titleId": ""
+            }
+          }
+        },
+        {
+          "type": "participant",
+          "id": "16173b95-fa0c-11e6-9d53-0242ac110007",
+          "info": {
+            "actor": "*Skye*",
+            "stats": {
+              "assists": 6,
+              "crystalMineCaptures": 0,
+              "deaths": 6,
+              "farm": 85.125,
+              "firstAfkTime": -1,
+              "goldMineCaptures": 1,
+              "itemGrants": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1003_Item_CrystalBit*": 4,
+                "*1009_Item_EclipsePrism*": 1,
+                "*1015_Item_Oakheart*": 1,
+                "*1017_Item_LightArmor*": 1,
+                "*1022_Item_CoatOfPlates*": 1,
+                "*1025_Item_EnergyBattery*": 1,
+                "*1027_Item_VoidBattery*": 1,
+                "*1030_Item_SprintBoots*": 1,
+                "*1032_Item_TravelBoots*": 1,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1044_Item_Frostburn*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1055_Item_BrokenMyth*": 1,
+                "*1061_Item_LightShield*": 1,
+                "*1062_Item_KineticShield*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1070_Item_PiercingShard*": 1,
+                "*1072_Item_HeavyPrism*": 3,
+                "*1087_Item_HalcyonChargers*": 1
+              },
+              "itemSells": {},
+              "itemUses": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1030_Item_SprintBoots*": 2,
+                "*1032_Item_TravelBoots*": 2,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1087_Item_HalcyonChargers*": 2
+              },
+              "items": [
+                "Frostburn",
+                "Broken Myth",
+                "Halcyon Chargers",
+                "Crystal Matrix",
+                "Armor2",
+                "Heavy Prism"
+              ],
+              "jungleKills": 54,
+              "karmaLevel": 1,
+              "kills": 10,
+              "krakenCaptures": 1,
+              "level": 30,
+              "minionKills": 75,
+              "nonJungleMinionKills": 21,
+              "skillTier": 25,
+              "skinKey": "Skye_Skin_Eagle_T1",
+              "turretCaptures": 2,
+              "wentAfk": false,
+              "winner": true
+            }
+          },
+          "player": {
+            "type": "player",
+            "id": "037c4e60-9c09-11e4-887e-06eb725f8a76",
+            "info": {
+              "name": "momipole",
+              "shardId": "",
+              "stats": {
+                "level": 30,
+                "lifetimeGold": 13417.375,
+                "lossStreak": 0,
+                "played": 2708,
+                "played_ranked": 1871,
+                "winStreak": 2,
+                "wins": 1402,
+                "xp": 175450
+              },
+              "titleId": ""
+            }
+          }
+        },
+        {
+          "type": "participant",
+          "id": "16173b95-fa0c-11e6-9d53-0242ac110007",
+          "info": {
+            "actor": "*Skye*",
+            "stats": {
+              "assists": 6,
+              "crystalMineCaptures": 0,
+              "deaths": 6,
+              "farm": 85.125,
+              "firstAfkTime": -1,
+              "goldMineCaptures": 1,
+              "itemGrants": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1003_Item_CrystalBit*": 4,
+                "*1009_Item_EclipsePrism*": 1,
+                "*1015_Item_Oakheart*": 1,
+                "*1017_Item_LightArmor*": 1,
+                "*1022_Item_CoatOfPlates*": 1,
+                "*1025_Item_EnergyBattery*": 1,
+                "*1027_Item_VoidBattery*": 1,
+                "*1030_Item_SprintBoots*": 1,
+                "*1032_Item_TravelBoots*": 1,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1044_Item_Frostburn*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1055_Item_BrokenMyth*": 1,
+                "*1061_Item_LightShield*": 1,
+                "*1062_Item_KineticShield*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1070_Item_PiercingShard*": 1,
+                "*1072_Item_HeavyPrism*": 3,
+                "*1087_Item_HalcyonChargers*": 1
+              },
+              "itemSells": {},
+              "itemUses": {
+                "*1000_Item_HalcyonPotion*": 2,
+                "*1030_Item_SprintBoots*": 2,
+                "*1032_Item_TravelBoots*": 2,
+                "*1043_Item_ReflexBlock*": 1,
+                "*1053_Item_CrystalInfusion*": 1,
+                "*1063_Item_Aegis*": 1,
+                "*1087_Item_HalcyonChargers*": 2
+              },
+              "items": [
+                "Frostburn",
+                "Broken Myth",
+                "Halcyon Chargers",
+                "Crystal Matrix",
+                "Armor2",
+                "Heavy Prism"
+              ],
+              "jungleKills": 54,
+              "karmaLevel": 1,
+              "kills": 10,
+              "krakenCaptures": 1,
+              "level": 30,
+              "minionKills": 75,
+              "nonJungleMinionKills": 21,
+              "skillTier": 25,
+              "skinKey": "Skye_Skin_Eagle_T1",
+              "turretCaptures": 2,
+              "wentAfk": false,
+              "winner": true
+            }
+          },
+          "player": {
+            "type": "player",
+            "id": "037c4e60-9c09-11e4-887e-06eb725f8a76",
+            "info": {
+              "name": "momipole",
+              "shardId": "",
+              "stats": {
+                "level": 30,
+                "lifetimeGold": 13417.375,
+                "lossStreak": 0,
+                "played": 2708,
+                "played_ranked": 1871,
+                "winStreak": 2,
+                "wins": 1402,
+                "xp": 175450
+              },
+              "titleId": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
