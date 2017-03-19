@@ -38,7 +38,7 @@ router.route('/player_stats')
       res.json({message: body});
     }
     logic_helper.getPlayerStats(ign, region, callback, filters);
-  });
+  }
 
   .update(function(req, res){
     var ign = req.query.ign;

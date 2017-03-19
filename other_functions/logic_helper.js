@@ -138,7 +138,6 @@ var updateSkillTier = function(player_id, match, rosters, success) {
 }
 
 function getFullRosters(match, includes) {
-  //TODO: make generic function
   var rosters = match.relationships.rosters.data;
   //Get rosters
   var all_rosters = [];
