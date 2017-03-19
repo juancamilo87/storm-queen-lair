@@ -57,14 +57,14 @@ function updatePlayerStats() {
 	var ign = $('#ign_text').val();
   var region = $('input[name="region"]:checked').val();
 
-  var url = "http://" + document.location.hostname + ":8080/api/player_stats";
+  var url = "http://" + document.location.hostname + ":8080/api/player_stats/update";
   console.log(url);
 
   $('#response').empty();
   
 	$.ajax({
           url: url,
-          type: 'UPDATE',
+          type: 'GET',
           dataType: 'json',
           data: { 
 				    ign: ign, 
@@ -80,11 +80,11 @@ function getPlayerStats() {
   var region = $('input[name="region"]:checked').val();
   
   var filter = {"hero":"ALL",
-								"position":"ALL",
-								"side":"ALL",
-								"game_type":"ALL",
-								"patch":"ALL",
-								"season":"ALL"};
+		"position":"ALL",
+		"side":"ALL",
+		"game_type":"ALL",
+		"patch":"ALL",
+		"season":"ALL"};
 
   var url = "http://" + document.location.hostname + ":8080/api/player_stats";
   console.log(url);
@@ -98,7 +98,7 @@ function getPlayerStats() {
           data: { 
 				    ign: ign, 
 				    region: region,
-				    filter: filter
+				    filters: filter
 				  },
           success: function(data) { console.log(data)},
           error: function() { console.log("Error updating"); }

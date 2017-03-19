@@ -1,4 +1,5 @@
 var db_helper = require('./db_helper');
+var moment = require('moment');
 
 var api_key = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjMjEzZmZiMC1kY2JmLTAxMzQtYTdiNC0wMjQyYWMxMTAwMDMiLCJpc3MiOiJnYW1lbG9ja2VyIiwib3JnIjoianVhbmNhbWlsbzg3LW91dGxvb2stY29tIiwiYXBwIjoiYzIxMjRiNDAtZGNiZi0wMTM0LWE3YjMtMDI0MmFjMTEwMDAzIiwicHViIjoic2VtYyIsInRpdGxlIjoidmFpbmdsb3J5Iiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.PNxHPaAZsJWd6k_Q0Bkz9BZQyQsHltBKfaAHsQj_MKI";
 var base_url = "https://api.dc01.gamelockerapp.com"; 
@@ -59,7 +60,7 @@ var getPlayer = function(ign, region, callback_function) {
 
 var getMatches = function(player_id, region, timestamp, logic_callback){
   console.log("Calling mad glory");
-  console.log("Timestamp: " + timestamp + " Iso format: " + new Date(timestamp).toIsoString());
+  console.log("Timestamp: " + timestamp);
   var request = require('request');    
 
   var options = {
@@ -73,8 +74,9 @@ var getMatches = function(player_id, region, timestamp, logic_callback){
     },
     qs: {
       'filter[playerIds]': player_id,
-      'filter[createdAt-start]': moment().utc().format(),
-      'sort': '-createdAt'
+      'filter[createdAt-start]': '2016-02-02T00:00:00Z',
+      'sort': '-createdAt',
+      'page[limit]': 2
     }
   };
 
@@ -82,11 +84,13 @@ var getMatches = function(player_id, region, timestamp, logic_callback){
     if (!error && response.statusCode == 200) {
       var info = JSON.parse(body);
       var data_array = info.data;
-      var includes_array = info.includes;
+      var includes_array = info.included;
       db_helper.updateLatestMatchCall(player_id);
       logic_callback(data_array, includes_array);
     } else {
       console.log("Error calling Mad Glory API");
+      console.log(response);
+      console.log(body);
       console.log(error);
     }
   }

@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var moment = require('moment');
+var async = require('async');
 
 // First you need to create a connection to the db
 var con = mysql.createConnection({
@@ -34,7 +35,7 @@ function opt(options, name, default_value){
 }
 
 function optWithKey(options, name, default_value) {
-  return options && options[name] !== undefined ? {'name': name, 'value': options[name]} : defaut_value;
+  return options && options[name] !== undefined ? {'name': name, 'value': options[name]} : default_value;
 }
 
 function appendFilter(update_query, filter) {
@@ -75,7 +76,7 @@ var getPlayer = function(player_id, success){
 }
 
 var getPlayerStats = function(player_id, filters, success){
-  
+  console.log(JSON.stringify(filters)); 
   var filter_hero = optWithKey(filters, "hero", undefined);
   var filter_position = optWithKey(filters, "position", undefined);
   var filter_side = optWithKey(filters, "side", undefined);
@@ -90,13 +91,13 @@ var getPlayerStats = function(player_id, filters, success){
   update_query = appendFilter(update_query, filter_hero);
   update_query = appendFilter(update_query, filter_position);
   update_query = appendFilter(update_query, filter_side);
-  update_query = appendFilter(update_query, fiter_game_type);
+  update_query = appendFilter(update_query, filter_game_type);
   update_query = appendFilter(update_query, filter_patch);
   update_query = appendFilter(update_query, filter_season);
 
   query = update_query.query;
   params_array = update_query.params;
-  
+  console.log(query);
   con.query(query, params_array, function(err, rows){
     if(err) throw err;
     success(rows);
@@ -122,7 +123,7 @@ var lastMatchUpdate = function(player_id, success){
   var query = 'SELECT request_timestamp, newest_data_stamp FROM latest_match_call '
             + 'WHERE player_id like ?';
 
-  con.query(query, [ign], function(err, rows){
+  con.query(query, [player_id], function(err, rows){
     if(err) throw err;
     if(rows.length > 1) throw "Error in database definition";
     if(rows.length == 0){
@@ -213,17 +214,17 @@ var updateLatestMatchCall = function(player_id, success) {
     function(err, rows){
       if(err) {
         console.log("Error updating updateLatestMatchCall");
-        success(err);
+        if(success) success(err);
         return;
       }
       console.log("LatestMatchCall updated");
-      success();
+      if(success) success();
     });
 }
 
 var updateLatestMatchTimestamp = function(player_id, timestamp, success) {
   var query = 'SELECT * FROM latest_match_call '
-            + 'WHERE player_id = ?';
+            + 'WHERE player_id = ??';
   con.query(query, [player_id],
     function(err, rows){
       if(err) {
@@ -238,11 +239,11 @@ var updateLatestMatchTimestamp = function(player_id, timestamp, success) {
       }
       var old_timestamp = rows[0].newest_data_stamp;
       if(old_timestamp) {
-        if(moment.duration(timestamp.diff(old_timestamp)) > 0) {
+        if(moment(timestamp).isAfter(old_timestamp)) {
           query = 'UPDATE latest_match_call '
             + 'SET newest_data_stamp = ? '
             + 'WHERE player_id like ?';
-          conn.query(query, [timestamp, player_id],
+          con.query(query, [timestamp, player_id],
             function(err, rows) {
               if(err) {
                 console.log("Error updating updateLatestMatchTimestamp");
@@ -260,7 +261,7 @@ var updateLatestMatchTimestamp = function(player_id, timestamp, success) {
         query = 'UPDATE latest_match_call '
             + 'SET newest_data_stamp = ? '
             + 'WHERE player_id like ?';
-        conn.query(query, [timestamp, player_id],
+        con.query(query, [timestamp, player_id],
           function(err, rows) {
             if(err) {
               console.log("Error updating updateLatestMatchTimestamp");
@@ -274,18 +275,18 @@ var updateLatestMatchTimestamp = function(player_id, timestamp, success) {
     });
 }
 
-var matchNotAnalized = function(player_id, match_id) {
+var matchNotAnalized = function(player_id, match_id, success) {
   var query = 'SELECT * FROM player_matches_added '
             + 'WHERE player_id like ? AND match_id like ?';
-  conn.query(query,[player_id, match_id],
+  con.query(query,[player_id, match_id],
     function(err, rows) {
       if(err) {
         throw err;
       }
       if(rows.length == 0) {
-        return false;
+        success(false);
       } else {
-        return true;
+        success(true);
       }
     });
 }
@@ -293,7 +294,7 @@ var matchNotAnalized = function(player_id, match_id) {
 var updatePlayerMatches = function(player_id, match_id, success) {
   var query = 'INSERT INTO player_matches_added '
             + 'SET player_id = ?, match_id = ?';
-  conn.query(query,[player_id, match_id],
+  con.query(query,[player_id, match_id],
     function(err, rows) {
       if(err) {
         console.log("Couldn't update player matches.");
@@ -311,10 +312,16 @@ var updatePlayerLastMatches = function(player_id, match, rosters, success) {
 }
 
 var updateStats = function(player_id, match, rosters, success) {
+  console.log("Updateing stats");
   var player_roster;
   var player_participant;
-  for(var roster in rosters) {
-    for(var participant in roster.participants) {
+  for(var i in rosters) {
+    var roster = rosters[i];
+    console.log("Roster");
+    for(var j in roster.participants) {
+      var participant = roster.participants[j];
+      console.log("Participant: "+participant.player.id);
+      console.log("player: "+player_id);
       if(participant.player.id == player_id) {
         player_roster = roster;
         player_participant = participant;
@@ -344,8 +351,9 @@ var updateStats = function(player_id, match, rosters, success) {
   player_stats.kill_part = (player_stats.kills + player_stats.assists) / player_roster.info.heroKills;
   player_stats.game_length = match.attributes.duration;
   
-
-
+  if(!player_stats.gold_min) player_stats.gold_min = 0;
+  if(!player_stats.gold) player_stats.gold = 0;
+  
   async.parallel([
         function(callback) {updatePlayerStats(player_id, match, rosters, player_roster, player_stats, callback);},
         function(callback) {updatePlayerFrenemyHeroes(player_id, match, rosters, player_roster, player_stats, callback);},
@@ -368,23 +376,29 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
     var seasons = ["ALL"];
 
     if(player_stats.hero) {
-      heroes.append(player_stats.hero);
+      heroes.push(player_stats.hero);
     }
     if(player_stats.position) {
-      positions.append(player_stats.position);
+      positions.push(player_stats.position);
     }
     if(player_stats.side) {
-      sides.append(player_stats.side);
+      sides.push(player_stats.side);
     }
     if(player_stats.game_type) {
-      game_types.append(player_stats.game_type);
+      game_types.push(player_stats.game_type);
     }
     if(player_stats.patch) {
-      patches.append(player_stats.patch);
+      patches.push(player_stats.patch);
     }
     if(player_stats.season) {
-      seasons.append(player_stats.season);
+      seasons.push(player_stats.season);
     }
+    
+    var test_query = 'SELECT * FROM player_stats';
+    con.query(test_query,function(err, rows) {
+      if(err) throw err;
+      console.log(rows.length);
+    });
     async.forEach(heroes, function (hero, callback) {
           async.forEach(positions, function (position, callback) {
             async.forEach(sides, function (side, callback){
@@ -400,17 +414,17 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                               + 'game_type like ? AND '
                               + 'patch like ? AND '
                               + 'season like ?';
-
                     con.query(query,
                       [player_id, hero, 
                       position, side, 
                       game_type, patch, 
-                      season],
+                      season],                   
                       function (err, rows) {
                         if(err) {
                           console.log("Error querying database.");
                           callback(err);
                         }
+                        console.log('Inside ' +rows.length);
                         if(rows.length == 0) {
                           query = 'INSERT INTO player_stats '
                               + 'SET player_id = ?, hero = ?, '
@@ -428,27 +442,26 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                             wins = 1;
                           }
                           var total_games = 1;
-
-                          conn.query(query,
-                            [player_id, hero, 
-                            position, side, 
-                            game_type, patch, 
-                            season, wins,
-                            total_games, player_stats.kills,
-                            player_stats.deaths, player_stats.assists,
-                            player_stats.cs_min, player_stats.gold_min,
-                            player_stats.gold, player_stats.kda,
-                            player_stats.kill_part, player_stats.game_length],
+                          var params = [player_id, hero,
+					position, side,
+					game_type, patch,
+					season, wins,
+					total_games, player_stats.kills,
+					player_stats.deaths, player_stats.assists,
+					player_stats.cs_min, player_stats.gold_min,
+					player_stats.gold, player_stats.kda,
+					player_stats.kill_part, player_stats.game_length];
+                          con.query(query, params,
                             function (err, rows) {
                               if(err) {
-                                console.log("Error inserting row");
+                                console.log("Error inserting row: " + err);
                                 callback(err);
                               } else {
-                                console.log("Inserted new stat to player_stats");
                                 callback();
                               }
                             });
                         } else if(rows.length == 1) {
+			  console.log("Stat already here");
                           var old_stats = rows[0];
                           var wins = old_stats.wins;
                           if(player_stats.wins) {
@@ -466,17 +479,17 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                           var game_length = (old_stats.game_length * old_stats.total_games + player_stats.game_length) / total_games;
                           
                           query = 'UPDATE player_stats '
-                                + 'SET wins = ?, total_games = ?, '
-                                + 'kills = ?, deaths = ?, '
-                                + 'assists = ?, cs_min = ? '
-                                + 'gold_min = ?, gold = ?, '
-                                + 'kda = ?, kill_part = ?, game_length = ? '
+                                + 'SET wins = ?, total_games = ??, '
+                                + 'kills = ?, deaths = ??, '
+                                + 'assists = ?, cs_min = ?? '
+                                + 'gold_min = ?, gold = ??, '
+                                + 'kda = ?, kill_part = ?, game_length = ?? '
                                 + 'WHERE player_id like ? AND '
                                 + 'hero like ? AND position like ? AND '
                                 + 'side like ? AND game_type like ? AND '
                                 + 'patch like ? AND season like ?';
 
-                          conn.query(query,
+                          con.query(query,
                             [wins, total_games,
                             kills, deaths,
                             assists, cs_min,
@@ -487,10 +500,9 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                             game_type, patch, season],
                             function (err, rows) {
                               if(err) {
-                                console.log("Error updating row");
+                               // console.log("Error updating row: " + err);
                                 callback(err);
                               } else {
-                                console.log("Updated stat to player_stats");
                                 callback();
                               }
                             });
@@ -502,55 +514,49 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                     
                   }, function (err) {
                     if(err) {
-                      console.log("Error in seasons");
+                      //console.log("Error in seasons: "+err);
                       callback(err);
                     } else {
-                      console.log("All seasons done");
                       callback();
                     }
                   });
                 }, function (err) {
                   if(err) {
-                    console.log("Error in patches");
+                   // console.log("Error in patches: "+err);
                     callback(err);
                   } else {
-                    console.log("All patches done");
                     callback();
                   }
                 });
               }, function (err) {
                 if(err) {
-                  console.log("Error in game_types");
+                 // console.log("Error in game_types: "+ err);
                   callback(err);
                 } else {
-                  console.log("All game_tyes done");
                   callback();
                 }
               });
             }, function (err) {
               if(err) {
-                console.log("Error in sides");
+               // console.log("Error in sides: "+err);
                 callback(err);
               } else {
-                console.log("All sides done");
                 callback();
               }
             });
           }, function (err) {
               if(err) {
-                console.log("Error in positions");
+               // console.log("Error in positions: "+err);
                 callback(err);
               } else {
-                console.log("All positions done");
                 callback();
               }
           });
         
     }, function (err) {
         if(err) {
-          console.log("Error in heroes");
+         // console.log("Error in heroes: "+err);
         } else {
-          console.log("All heroes done");
         }
     });
 }

@@ -7,6 +7,7 @@ var logic_helper = require('../other_functions/logic_helper');
 router.use(function(req, res, next) {
     // do logging
     res.setHeader('Access-Control-Allow-Origin',  "http://35.157.73.205");
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH'); 
     next(); // make sure we go to the next routes and don't stop here
 });
 
@@ -33,14 +34,14 @@ router.route('/player_stats')
     var ign = req.query.ign;
     var region = req.query.region;
     var filters = req.query.filters;
-    
     function callback(body) {
       res.json({message: body});
     }
     logic_helper.getPlayerStats(ign, region, callback, filters);
-  }
+  });
 
-  .update(function(req, res){
+router.route('/player_stats/update')
+  .get(function(req, res){
     var ign = req.query.ign;
     var region = req.query.region;
     var device_id = req.query.device_id;
