@@ -312,7 +312,7 @@ var updatePlayerLastMatches = function(player_id, match, rosters, success) {
 }
 
 var updateStats = function(player_id, match, rosters, success) {
-  console.log("Updateing stats");
+  console.log("Updating stats");
   var player_roster;
   var player_participant;
   for(var i in rosters) {
@@ -397,7 +397,7 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
     var test_query = 'SELECT * FROM player_stats';
     con.query(test_query,function(err, rows) {
       if(err) throw err;
-      console.log(rows.length);
+      console.log('Before: ' + rows.length);
     });
     async.forEach(heroes, function (hero, callback) {
           async.forEach(positions, function (position, callback) {
@@ -405,28 +405,7 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
               async.forEach(game_types, function (game_type, callback){
                 async.forEach(patches, function (patch, callback){
                   async.forEach(seasons, function (season, callback){
-
-                    var query = 'SELECT * FROM player_stats WHERE '
-                              + 'player_id like ? AND '
-                              + 'hero like ? AND '
-                              + 'position like ? AND '
-                              + 'side like ? AND '
-                              + 'game_type like ? AND '
-                              + 'patch like ? AND '
-                              + 'season like ?';
-                    con.query(query,
-                      [player_id, hero, 
-                      position, side, 
-                      game_type, patch, 
-                      season],                   
-                      function (err, rows) {
-                        if(err) {
-                          console.log("Error querying database.");
-                          callback(err);
-                        }
-                        console.log('Inside ' +rows.length);
-                        if(rows.length == 0) {
-                          query = 'INSERT INTO player_stats '
+                    var query = 'INSERT INTO player_stats '
                               + 'SET player_id = ?, hero = ?, '
                               + 'position = ?, side = ?, '
                               + 'game_type = ?, patch = ?, ' 
@@ -437,64 +416,52 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                               + 'kda = ?, kill_part = ?, '
                               + 'game_length = ?';
 
+                    var wins = 0;
+                    if(player_stats.wins) {
+                      wins = 1;
+                    }
+                    var total_games = 1;
+                    var params = [player_id, hero,
+                                  position, side,
+                                  game_type, patch,
+                                  season, wins,
+                                  total_games, player_stats.kills,
+                                  player_stats.deaths, player_stats.assists,
+                                  player_stats.cs_min, player_stats.gold_min,
+                                  player_stats.gold, player_stats.kda,
+                                  player_stats.kill_part, player_stats.game_length];
+                    con.query(query, params,
+                      function (err, rows) {
+                        if(err) {
+                          console.log("Stat exists. Updating stat.");
+                          
                           var wins = 0;
                           if(player_stats.wins) {
                             wins = 1;
                           }
-                          var total_games = 1;
-                          var params = [player_id, hero,
-					position, side,
-					game_type, patch,
-					season, wins,
-					total_games, player_stats.kills,
-					player_stats.deaths, player_stats.assists,
-					player_stats.cs_min, player_stats.gold_min,
-					player_stats.gold, player_stats.kda,
-					player_stats.kill_part, player_stats.game_length];
-                          con.query(query, params,
-                            function (err, rows) {
-                              if(err) {
-                                console.log("Error inserting row: " + err);
-                                callback(err);
-                              } else {
-                                callback();
-                              }
-                            });
-                        } else if(rows.length == 1) {
-			  console.log("Stat already here");
-                          var old_stats = rows[0];
-                          var wins = old_stats.wins;
-                          if(player_stats.wins) {
-                            wins = wins + 1;
-                          }
-                          var total_games = old_stats.total_games + 1;
-                          var kills = (old_stats.kills * old_stats.total_games + player_stats.kills) / total_games;
-                          var deaths = (old_stats.deaths * old_stats.total_games + player_stats.deaths) / total_games;
-                          var assists = (old_stats.assists * old_stats.total_games + player_stats.assists) / total_games;
-                          var cs_min = (old_stats.cs_min * old_stats.total_games + player_stats.cs_min) / total_games;
-                          var gold_min = (old_stats.gold_min * old_stats.total_games + player_stats.gold_min) / total_games;
-                          var gold = (old_stats.gold * old_stats.total_games + player_stats.gold) / total_games;
-                          var kda = (old_stats.kda * old_stats.total_games + player_stats.kda) / total_games;
-                          var kill_part = (old_stats.kill_part * old_stats.total_games + player_stats.kill_part) / total_games;
-                          var game_length = (old_stats.game_length * old_stats.total_games + player_stats.game_length) / total_games;
                           
                           query = 'UPDATE player_stats '
-                                + 'SET wins = ?, total_games = ??, '
-                                + 'kills = ?, deaths = ??, '
-                                + 'assists = ?, cs_min = ?? '
-                                + 'gold_min = ?, gold = ??, '
-                                + 'kda = ?, kill_part = ?, game_length = ?? '
+                                + 'SET wins = wins + ?, total_games = total_games + 1, '
+                                + 'kills = (kills * total_games + ?) / (total_games + 1), '
+                                + 'deaths = (deaths * total_games + ?) / (total_games + 1), '
+                                + 'assists = (assists * total_games + ?) / (total_games + 1), '
+                                + 'cs_min = (cs_min * total_games + ?) / (total_games + 1), '
+                                + 'gold_min = (gold_min * total_games + ?) / (total_games + 1), '
+                                + 'gold = (gold * total_games + ?) / (total_games + 1), '
+                                + 'kda = (kda * total_games + ?) / (total_games + 1), '
+                                + 'kill_part = (kil_part * total_games + ?) / (total_games + 1), '
+                                + 'game_length = (game_length * total_games + ?) / (total_games + 1) '
                                 + 'WHERE player_id like ? AND '
                                 + 'hero like ? AND position like ? AND '
                                 + 'side like ? AND game_type like ? AND '
                                 + 'patch like ? AND season like ?';
 
                           con.query(query,
-                            [wins, total_games,
-                            kills, deaths,
-                            assists, cs_min,
-                            gold_min, gold,
-                            kda, kill_part, game_length,
+                            [wins, 
+                            player_stats.kills, player_stats.deaths,
+                            player_stats.assists, player_stats.cs_min,
+                            player_stats.gold_min, player_stats.gold,
+                            player_stats.kda, player_stats.kill_part, player_stats.game_length,
                             player_id, hero,
                             position, side, 
                             game_type, patch, season],
@@ -506,9 +473,9 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                                 callback();
                               }
                             });
-                        } else {
-                          console.log("Error in the database. Duplicate keys.");
-                          callback(err);
+                      } else {
+                          console.log("Inserted new stat.");
+                          callback();
                         }
                       });
                     
