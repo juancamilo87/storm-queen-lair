@@ -75,8 +75,7 @@ var getMatches = function(player_id, region, timestamp, logic_callback){
     qs: {
       'filter[playerIds]': player_id,
       'filter[createdAt-start]': '2016-02-02T00:00:00Z',
-      'sort': '-createdAt',
-      'page[limit]': 2
+      'sort': '-createdAt'
     }
   };
 

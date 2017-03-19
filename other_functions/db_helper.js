@@ -344,8 +344,8 @@ var updateStats = function(player_id, match, rosters, success) {
   player_stats.kills = player_participant.info.stats.kills;
   player_stats.deaths = player_participant.info.stats.deaths;
   player_stats.assists = player_participant.info.stats.assists;
-  player_stats.cs_min = player_participant.info.stats.farm / match.attributes.duration / 60;
-  player_stats.gold_min = player_participant.info.stats.gold / match.attributes.duration / 60;
+  player_stats.cs_min = player_participant.info.stats.farm / (match.attributes.duration / 60);
+  player_stats.gold_min = player_participant.info.stats.gold / (match.attributes.duration / 60);
   player_stats.gold = player_participant.info.stats.gold;
   player_stats.kda = (player_stats.kills + player_stats.assists) / (player_stats.deaths + 1);
   player_stats.kill_part = (player_stats.kills + player_stats.assists) / player_roster.info.heroKills;
@@ -441,7 +441,7 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                           }
                           
                           query = 'UPDATE player_stats '
-                                + 'SET wins = wins + ?, total_games = total_games + 1, '
+                                + 'SET wins = wins + ?, '
                                 + 'kills = (kills * total_games + ?) / (total_games + 1), '
                                 + 'deaths = (deaths * total_games + ?) / (total_games + 1), '
                                 + 'assists = (assists * total_games + ?) / (total_games + 1), '
@@ -449,8 +449,9 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                                 + 'gold_min = (gold_min * total_games + ?) / (total_games + 1), '
                                 + 'gold = (gold * total_games + ?) / (total_games + 1), '
                                 + 'kda = (kda * total_games + ?) / (total_games + 1), '
-                                + 'kill_part = (kil_part * total_games + ?) / (total_games + 1), '
-                                + 'game_length = (game_length * total_games + ?) / (total_games + 1) '
+                                + 'kill_part = (kill_part * total_games + ?) / (total_games + 1), '
+                                + 'game_length = (game_length * total_games + ?) / (total_games + 1), '
+                                + 'total_games = total_games + 1 '
                                 + 'WHERE player_id like ? AND '
                                 + 'hero like ? AND position like ? AND '
                                 + 'side like ? AND game_type like ? AND '
@@ -467,7 +468,7 @@ var updatePlayerStats = function(player_id, match, rosters, player_roster, playe
                             game_type, patch, season],
                             function (err, rows) {
                               if(err) {
-                               // console.log("Error updating row: " + err);
+                               console.log("Error updating row: " + err);
                                 callback(err);
                               } else {
                                 callback();
