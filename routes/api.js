@@ -28,22 +28,31 @@ router.route('/player_info')
         
     });
 
-router.route('/player_stats/ign')
+router.route('/player_stats')
   .get(function(req, res){
     var ign = req.query.ign;
     var region = req.query.region;
-    var device_id = req.query.device_id;
     var filters = req.query.filters;
     
     function callback(body) {
-      if(device_id) {
-        //TODO: Return 200
-      } else {
-        res.json({message: body});
-      }
+      res.json({message: body});
     }
-    var options = {"device_id": device_id};
-    logic_helper.getPlayerStats(ign, region, callback, filters, options);
+    logic_helper.getPlayerStats(ign, region, callback, filters);
+  });
+
+  .update(function(req, res){
+    var ign = req.query.ign;
+    var region = req.query.region;
+    var device_id = req.query.device_id;
+
+    function callback(body) {
+      if(device_id) {
+        console.log("Send notification");
+        //TODO: Send notification
+      }
+      res.json({mssage: body});
+    }
+    logic_helper.updatePlayerStats(ign, region, callback);
   });
 
 module.exports = router;

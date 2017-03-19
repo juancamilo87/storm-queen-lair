@@ -47,11 +47,7 @@ function appendFilter(update_query, filter) {
     query = query + ' AND ' + filter_name + ' like ?';
     params[params.length] = filter_value;
   }
-  return {'query': query, 'params': params};
-  var filter_name = fiter.name;
-  var filter_value = filter.value;
-
-  
+  return {'query': query, 'params': params};  
 }
 
 var getPlayerId = function(ign, success){
@@ -188,28 +184,125 @@ var updatePlayer = function(player_id, ign, options){
 }
 
 var updatePlayerSkillTier = function(player_id, skill_tier, success){
-  //TODO: update player skill tier
-  console.log("New skill tier: " + skill_tier);
+  var query = 'UPDATE player_info '
+            + 'SET skill_tier = ? '
+            + 'WHERE player_id like ?';
+  con.query(query, 
+             [skill_tier, player_id],
+             function(err, rows){
+              //Dont throw err because server crashes (I think).
+              if(err) {
+                console.log("Error updating skill tier");
+                success(err);
+                return;
+              }
+    
+               console.log("Table player_info updated");
+               success();
+               if(skill_tier) updatePlayerSkillTier(player_id, skill_tier);
+             });
 }
 
 var updateLatestMatchCall = function(player_id, success) {
-  //TODO update LatestMatchCall with current time
+  var query = 'INSERT INTO latest_match_call '
+            + 'SET player_id = ?, request_timestamp = ? '
+            + 'ON DUPLICATE KEY UPDATE '
+            + 'request_timestamp = ?';
   var timestamp = moment().utc().format();
+  con.query(query, [player_id, timestamp, timestamp],
+    function(err, rows){
+      if(err) {
+        console.log("Error updating updateLatestMatchCall");
+        success(err);
+        return;
+      }
+      console.log("LatestMatchCall updated");
+      success();
+    });
 }
 
 var updateLatestMatchTimestamp = function(player_id, timestamp, success) {
-  //TODO update LatestMatchCall latest match
+  var query = 'SELECT * FROM latest_match_call '
+            + 'WHERE player_id = ?';
+  con.query(query, [player_id],
+    function(err, rows){
+      if(err) {
+        console.log("Error updating updateLatestMatchTimestamp");
+        success(err);
+        return;
+      }
+      if(rows.length != 1) {
+        console.log("Error updating updateLatestMatchTimestamp");
+        success(err);
+        return;
+      }
+      var old_timestamp = rows[0].newest_data_stamp;
+      if(old_timestamp) {
+        if(moment.duration(timestamp.diff(old_timestamp)) > 0) {
+          query = 'UPDATE latest_match_call '
+            + 'SET newest_data_stamp = ? '
+            + 'WHERE player_id like ?';
+          conn.query(query, [timestamp, player_id],
+            function(err, rows) {
+              if(err) {
+                console.log("Error updating updateLatestMatchTimestamp");
+                success(err);
+                return
+              }
+              console.log("Updated latestMatchTimestamp");
+              success();
+            });
+        } else {
+          console.log("Didn't need to update, old value is newer.");
+          success();
+        }
+      } else {
+        query = 'UPDATE latest_match_call '
+            + 'SET newest_data_stamp = ? '
+            + 'WHERE player_id like ?';
+        conn.query(query, [timestamp, player_id],
+          function(err, rows) {
+            if(err) {
+              console.log("Error updating updateLatestMatchTimestamp");
+              success(err);
+              return
+            }
+            console.log("Updated latestMatchTimestamp (First time)");
+            success();
+          });
+      }
+    });
 }
 
 var matchNotAnalized = function(player_id, match_id) {
-  var matchAnalized = false;
-  //TODO return false or true depending if the pair exists.
-
-  return matchAnalized;
+  var query = 'SELECT * FROM player_matches_added '
+            + 'WHERE player_id like ? AND match_id like ?';
+  conn.query(query,[player_id, match_id],
+    function(err, rows) {
+      if(err) {
+        throw err;
+      }
+      if(rows.length == 0) {
+        return false;
+      } else {
+        return true;
+      }
+    });
 }
 
 var updatePlayerMatches = function(player_id, match_id, success) {
-  //TODO: update player matches
+  var query = 'INSERT INTO player_matches_added '
+            + 'SET player_id = ?, match_id = ?';
+  conn.query(query,[player_id, match_id],
+    function(err, rows) {
+      if(err) {
+        console.log("Couldn't update player matches.");
+        success(err);
+        return;
+      }
+      console.log("Updated player matches.");
+      success();
+    });
 }
 
 var updatePlayerLastMatches = function(player_id, match, rosters, success) {
@@ -218,8 +311,6 @@ var updatePlayerLastMatches = function(player_id, match, rosters, success) {
 }
 
 var updateStats = function(player_id, match, rosters, success) {
-  //TODO update player stats
-  //Save stats for all filters
   var player_roster;
   var player_participant;
   for(var roster in rosters) {

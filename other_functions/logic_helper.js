@@ -35,8 +35,7 @@ var getPlayer = function(ign, region, callback){
 		});
 }
 
-var getPlayerStats = function(ign, region, callback, filters, options){
-  var device_id = opt(options, "device_id", undefined);
+var updatePlayerStats = function(ign, region, callback) {
   function updateStats(matches, includes) {
     async.each(matches,function(match, callback) {
       function local_callback() {
@@ -46,11 +45,9 @@ var getPlayerStats = function(ign, region, callback, filters, options){
     }, function(err) {
       if(err) {
         console.log("Error: " + err);
+        callback("Error geting matches");
       } else {
-        if(device_id) {
-          //TODO: Send notification to device
-          console.log("Stats updated. A notification has to be sent here.")
-        }
+        callback("Matches updated");
       }
     });
   }
@@ -69,12 +66,8 @@ var getPlayerStats = function(ign, region, callback, filters, options){
           console.log("Match data too old, getting newer matches but returning old data.");
           mad_glory.getMatches(player_id, region, row.newest_data_stamp, updateStats);
         } else {
-          console.log("Match data new, no need to update.");
+          callback("Matches already up to date.");
         }
-        db_helper.getPlayerStats(player_id, filters, function(stats) {
-            stats.last_update = timestamp;
-            callback(stats);
-          });
 
       });
     }
@@ -82,7 +75,24 @@ var getPlayerStats = function(ign, region, callback, filters, options){
   getPlayer(ign, region, statsCallback);
 }
 
+var getPlayerStats = function(ign, region, callback, filters){
+  
+  function statsCallback(body) {
+    var player_id = body.player_id;
+    console.log("Got player_id: " + player_id);
+    if(player_id) {
+      console.log("Player id found");
+      db_helper.getPlayerStats(player_id, filters, function(stats) {
+            stats.last_update = timestamp;
+            callback(stats);
+          });
+    }
+  }
+  getPlayer(ign, region, statsCallback);
+}
+
 var updateStatsForMatch = function(player_id, match, includes_array, success) {
+  //TODO: Check if match is valid on this if
   if(db_helper.matchNotAnalized(player_id, match.id)) {
     var rosters = getFullRosters(match, includes_array);
     async.parallel([
@@ -206,5 +216,6 @@ module.exports = {
   getPlayer,
   getPlayerStats,
   updateStatsForMatch,
-  updateSkillTier
+  updateSkillTier,
+  updatePlayerStats
 };

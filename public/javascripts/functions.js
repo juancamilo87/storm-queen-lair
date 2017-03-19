@@ -24,7 +24,7 @@ function myFunction() {
 }
 
 function processPlayer(data) {
-        var json = data.message;
+	var json = data.message;
 	var name = json.ign;
 	var region = json.region;
 	var level = json.level;
@@ -51,6 +51,56 @@ function processPlayer(data) {
 
 	$('#response').append(html_to_inject);
 
-	
+}
 
+function updatePlayerStats() {
+	var ign = $('#ign_text').val();
+  var region = $('input[name="region"]:checked').val();
+
+  var url = "http://" + document.location.hostname + ":8080/api/player_stats";
+  console.log(url);
+
+  $('#response').empty();
+  
+	$.ajax({
+          url: url,
+          type: 'UPDATE',
+          dataType: 'json',
+          data: { 
+				    ign: ign, 
+				    region: region
+				  },
+          success: function(data) { console.log(data)},
+          error: function() { console.log("Error updating"); }
+        });
+}
+
+function getPlayerStats() {
+	var ign = $('#ign_text').val();
+  var region = $('input[name="region"]:checked').val();
+  
+  var filter = {"hero":"ALL",
+								"position":"ALL",
+								"side":"ALL",
+								"game_type":"ALL",
+								"patch":"ALL",
+								"season":"ALL"};
+
+  var url = "http://" + document.location.hostname + ":8080/api/player_stats";
+  console.log(url);
+
+  $('#response').empty();
+  
+	$.ajax({
+          url: url,
+          type: 'GET',
+          dataType: 'json',
+          data: { 
+				    ign: ign, 
+				    region: region,
+				    filter: filter
+				  },
+          success: function(data) { console.log(data)},
+          error: function() { console.log("Error updating"); }
+        });
 }
